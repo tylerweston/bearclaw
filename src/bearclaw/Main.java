@@ -13,7 +13,9 @@ package bearclaw;
     - default settings (ie keywords that automatically load, default dir for saving)
     - don't generate repots if keywords are empty
     - cleaup GUI, move to XML with controllers and whatnot? how does that even work?
-    -
+    - Trying to remove tags with no tag selected results in a warning!
+    - shouldn't be able to add blank tags to key word list
+    - debug log window is buggy LUL
 
     bugs:
     - menu shows up in the wrong place sometimes (?) only seen once, javafx problem?

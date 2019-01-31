@@ -31,6 +31,11 @@ class MainMenu extends MenuBar {
 //        fileOpen.setOnAction((ae) -> controller.openFile());
         fileMenu.getItems().add(fileOpen);
 
+        MenuItem fileSave = new MenuItem("_Save");
+        fileSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN));
+        fileSave.setOnAction((ae) -> controller.fileSave());
+        fileMenu.getItems().add(fileSave);
+
         MenuItem moveItem = new MenuItem("_Choose");
         moveItem.setAccelerator(new KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN));
         moveItem.setOnAction((ae) -> controller.choosedir());
@@ -51,26 +56,28 @@ class MainMenu extends MenuBar {
 
         final Menu toolsMenu = new Menu("_Tools");
 
-        MenuItem toolsSuggestTag = new MenuItem("Suggest _Tags");
-        toolsSuggestTag.setAccelerator(new KeyCodeCombination(KeyCode.T, KeyCombination.SHORTCUT_DOWN));
-//        toolsSuggestTag.setOnAction((ae) -> controller.getSuggestedTags());
-        toolsSuggestTag.disableProperty().bind(setDisabled);
+        MenuItem toolsBatchGenerate = new MenuItem("_Batch Generate");
+        toolsBatchGenerate.setAccelerator(new KeyCodeCombination(KeyCode.B, KeyCombination.SHORTCUT_DOWN));
+        toolsBatchGenerate.setOnAction((ae) -> controller.batchGenerate());
+//        toolsBatchGenerate.disableProperty().bind(setDisabled);
 
 
-        MenuItem toolsRenamingLog = new MenuItem("_Renaming Log");
-        toolsRenamingLog.setAccelerator(new KeyCodeCombination(KeyCode.R, KeyCombination.SHORTCUT_DOWN));
-//        toolsRenamingLog.setOnAction((ae) -> controller.openLog());
+        MenuItem toolsDebugLog = new MenuItem("_Log");
+        toolsDebugLog.setAccelerator(new KeyCodeCombination(KeyCode.L, KeyCombination.SHORTCUT_DOWN));
+        toolsDebugLog.setOnAction((ae) -> controller.openLog());
+//        toolsRenamingLog.disableProperty().bind(setDisabled);
 
-        MenuItem toolsTagFolder = new MenuItem("Tag _Folder");
-        toolsTagFolder.setAccelerator(new KeyCodeCombination(KeyCode.F, KeyCombination.SHORTCUT_DOWN));
+
+//        MenuItem toolsTagFolder = new MenuItem("Tag _Folder");
+//        toolsTagFolder.setAccelerator(new KeyCodeCombination(KeyCode.F, KeyCombination.SHORTCUT_DOWN));
 //        toolsTagFolder.setOnAction((ae) -> controller.TagFolder());
 
 
 
-        toolsMenu.getItems().add(toolsSuggestTag);
-        toolsMenu.getItems().add(new SeparatorMenuItem());
-        toolsMenu.getItems().add(toolsRenamingLog);
-        toolsMenu.getItems().add(toolsTagFolder);
+        toolsMenu.getItems().add(toolsBatchGenerate);
+//        toolsMenu.getItems().add(new SeparatorMenuItem());
+        toolsMenu.getItems().add(toolsDebugLog);
+//        toolsMenu.getItems().add(toolsTagFolder);
 
 
         // about menu
@@ -80,7 +87,7 @@ class MainMenu extends MenuBar {
         aboutItem.setOnAction((ae) -> controller.showAbout());
         aboutMenu.getItems().add(aboutItem);
 
-        this.getMenus().addAll(fileMenu /*, toolsMenu*/, aboutMenu);    // add tools back in if needed
+        this.getMenus().addAll(fileMenu , toolsMenu, aboutMenu);    // add tools back in if needed
     }
 
     /**

@@ -3,6 +3,10 @@ package bearclaw;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.stage.DirectoryChooser;
 import jxl.Workbook;
 import jxl.write.WritableSheet;
@@ -43,9 +47,10 @@ public class Controller {
 
 
     public boolean generateReport() {
-        GUI.setDebugText("Generating report...");
+        gui.setDebugText("Generating report...");
         // first, open our excel sheet
         if (model.getSaveDir() == null) {
+            gui.setDebugText("No output folder selected");
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("UH OH");
             alert.setHeaderText(null);
@@ -305,11 +310,56 @@ public class Controller {
         model.setSaveDir(selectedFile);
     }
 
+    void fileLoad() {
+        // do loading here
+    }
+
+    void fileSave() {
+        // do saving here
+    }
+
+    void batchGenerate() {
+        // here we go through an entire directory and make reports for EVERY
+        // bearclaw keyword list in there
+    }
+
+    void openLog() {
+        // show debug log information here, this only persists per session
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Debug Log");
+        alert.setHeaderText("Debug info for this session");
+
+        Label label = new Label("Log:");
+
+        TextArea textArea = new TextArea(model.getDebugLog().toString().replace(",","\n"));
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+
+        textArea.setMaxWidth(Double.MAX_VALUE);
+        textArea.setMaxHeight(Double.MAX_VALUE);
+        GridPane.setVgrow(textArea, Priority.ALWAYS);
+        GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+        GridPane expContent = new GridPane();
+        expContent.setMaxWidth(Double.MAX_VALUE);
+        expContent.add(label, 0, 0);
+        expContent.add(textArea, 0, 1);
+
+// Set expandable Exception into the dialog pane.
+        alert.getDialogPane().setExpandableContent(expContent);
+
+        alert.showAndWait();
+    }
+
     void doExit() {
         // to do here:
         // clean up and save any data, etc as necessary
         Platform.exit();
         System.exit(0);
+    }
+
+    void addDebugLog(String msg) {
+        model.addToDebug(msg);
     }
 
     void showAbout() {

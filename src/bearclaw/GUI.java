@@ -22,7 +22,7 @@ public class GUI {
     private final MainMenu controllerMenu;
 
     public GUI(Stage primaryStage, Controller setController) {
-        controller = setController;
+        this.controller = setController;
         stage = primaryStage;
 
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -101,8 +101,9 @@ public class GUI {
 
         primaryStage.show();
 }
-    static void setDebugText(String msg) {
+    void setDebugText(String msg) {
         debug.setText(msg);
+        controller.addDebugLog(msg);
     }
 
     Stage getStage() {

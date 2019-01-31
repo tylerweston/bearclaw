@@ -1,10 +1,12 @@
 package bearclaw;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class Model {
 
     File saveDir = null;
+    ArrayList<String> debugLog = new ArrayList<>();
 
     //TODO:
     // -this eventually will hold all of our data, so we need to move the keywords that we
@@ -19,6 +21,18 @@ public class Model {
         // init stuff here
         // eventually all of our list of tags, loading and parsing data
         // and associated things will go here
+
+        // when we first get initialized we want to do some things:
+        // find out if we have a default keyword list, and if yes, save it
+        // restore the directory we decided to save our excel output to
+    }
+
+    void addToDebug(String toAdd) {
+        debugLog.add(toAdd);
+    }
+
+    ArrayList<String> getDebugLog() {
+        return debugLog;
     }
 
     void setSaveDir(File saveDir) {

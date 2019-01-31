@@ -12,6 +12,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class GUI {
     static Text debug = new Text();
@@ -23,6 +24,14 @@ public class GUI {
     public GUI(Stage primaryStage, Controller setController) {
         controller = setController;
         stage = primaryStage;
+
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                controller.doExit();
+            }
+        });
+
         GridPane root = new GridPane();
         root.setAlignment(Pos.CENTER);
         primaryStage.setTitle("BearClaw v0.1");

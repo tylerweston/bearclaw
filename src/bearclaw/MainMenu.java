@@ -40,47 +40,12 @@ class MainMenu extends MenuBar {
 
         MenuItem fileExit = new MenuItem("E_xit");
         fileExit.setAccelerator(new KeyCodeCombination(KeyCode.X, KeyCombination.SHORTCUT_DOWN));
-//        fileExit.setOnAction((ae) -> controller.doExit());
+        fileExit.setOnAction((ae) -> controller.doExit());
         fileMenu.getItems().add(fileExit);
 
         // view menu
 
-        final Menu viewMenu = new Menu("_View");
 
-        MenuItem viewActualSize = new MenuItem("Actual Size");
-//        viewActualSize.setOnAction((ae) -> controller.zoomActualSize());
-        viewActualSize.disableProperty().bind(setDisabled);
-        viewMenu.getItems().add(viewActualSize);
-
-        MenuItem viewFitWindow = new MenuItem("Fit to window");
-//        viewFitWindow.setOnAction((ae) -> controller.zoomFitWindow());
-        viewFitWindow.disableProperty().bind(setDisabled);
-        viewMenu.getItems().add(viewFitWindow);
-
-        MenuItem view50Zoom = new MenuItem("Zoom 50%");
-//        view50Zoom.setOnAction((ae) -> controller.zoom50());
-        view50Zoom.disableProperty().bind(setDisabled);
-        viewMenu.getItems().add(view50Zoom);
-
-        MenuItem viewZoomIn = new MenuItem("Zoom In");
-//        viewZoomIn.setOnAction((ae) -> controller.zoomIn());
-        viewZoomIn.disableProperty().bind(setDisabled);
-        viewZoomIn.setAccelerator(new KeyCodeCombination(KeyCode.EQUALS));
-        viewMenu.getItems().add(viewZoomIn);
-
-        MenuItem viewZoomOut = new MenuItem("Zoom In");
-//        viewZoomOut.setOnAction((ae) -> controller.zoomOut());
-        viewZoomOut.disableProperty().bind(setDisabled);
-        viewZoomOut.setAccelerator(new KeyCodeCombination(KeyCode.MINUS));
-        viewMenu.getItems().add(viewZoomOut);
-
-        viewMenu.getItems().add(new SeparatorMenuItem());
-
-        MenuItem showFolder = new MenuItem("Show File in _Browser");
-        showFolder.setAccelerator(new KeyCodeCombination(KeyCode.B, KeyCombination.SHORTCUT_DOWN));
-        showFolder.disableProperty().bind(setDisabled);
-//        showFolder.setOnAction((ae) -> controller.showInBrowser());
-        viewMenu.getItems().add(showFolder);
 
         // tools menu
 
@@ -112,10 +77,10 @@ class MainMenu extends MenuBar {
 
         final Menu aboutMenu = new Menu("_About");
         MenuItem aboutItem = new MenuItem("About");
-//        aboutItem.setOnAction((ae) -> controller.showAbout());
+        aboutItem.setOnAction((ae) -> controller.showAbout());
         aboutMenu.getItems().add(aboutItem);
 
-        this.getMenus().addAll(fileMenu, viewMenu, toolsMenu, aboutMenu);
+        this.getMenus().addAll(fileMenu /*, toolsMenu*/, aboutMenu);    // add tools back in if needed
     }
 
     /**

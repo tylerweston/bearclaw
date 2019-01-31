@@ -3,27 +3,20 @@ package bearclaw;
 /*
     bearclaw ebay price history amalgamator / spreadsheet generator
     tyler weston, dec 31st 2018
-    what it does so far:
-    - can add / remove keywords
-    - generate report for multiple items
-    to do still:
-    - saving the list <----------------------- next big thing to finish core functionality
-    - add more options (ie what data to write to file !! )
-    - add keyword name to top of each sheet
-    - better gui functionality
-    dream features:
-    - multiple lists?
-    - in different categories?
 
-    - make sure to fix basic functionality next
-    - take unused menu items out
-    - save / load lists
+    todo:
+    - saving the list <----------------------- next big thing to finish core functionality\
+    - loading lists
+    - add more options (ie what data to write to file !! )
+    - add keyword name to top of each sheet (?)
     - allow different category IDs for
-    - ??
+    - default settings (ie keywords that automatically load, default dir for saving)
+    - don't generate repots if keywords are empty
+    - cleaup GUI, move to XML with controllers and whatnot? how does that even work?
+    -
 
     bugs:
-    - menu shows up in the wrong place sometimes?
-    - exporting excel maybe not working?
+    - menu shows up in the wrong place sometimes (?) only seen once, javafx problem?
  */
 
 

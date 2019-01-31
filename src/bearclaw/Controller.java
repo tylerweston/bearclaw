@@ -1,11 +1,8 @@
 package bearclaw;
 
-import javafx.collections.FXCollections;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.text.Text;
-import javafx.scene.control.ListView;
+import javafx.scene.control.Alert;
 import javafx.stage.DirectoryChooser;
 import jxl.Workbook;
 import jxl.write.WritableSheet;
@@ -48,7 +45,18 @@ public class Controller {
     public boolean generateReport() {
         GUI.setDebugText("Generating report...");
         // first, open our excel sheet
+        if (model.getSaveDir() == null) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("UH OH");
+            alert.setHeaderText(null);
+            alert.setContentText("Choose a directory to save output to");
+
+            alert.showAndWait();
+            return false;
+        }
+
         String EXCEL_FILE_LOCATION = model.getSaveDir().getPath() + "/out.xls";
+
 
         // create excel workbook
         WritableWorkbook excelOutput = null;
@@ -295,5 +303,21 @@ public class Controller {
         if (desktop != null) dc.setInitialDirectory(desktop);
         File selectedFile = dc.showDialog(gui.getStage());
         model.setSaveDir(selectedFile);
+    }
+
+    void doExit() {
+        // to do here:
+        // clean up and save any data, etc as necessary
+        Platform.exit();
+        System.exit(0);
+    }
+
+    void showAbout() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("About");
+        alert.setHeaderText(null);
+        alert.setContentText("This is where the about message will go, I guess.");
+
+        alert.showAndWait();
     }
 }

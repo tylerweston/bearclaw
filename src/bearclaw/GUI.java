@@ -29,18 +29,18 @@ public class GUI {
         Scene scene = new Scene(root, 400, 400);
         primaryStage.setScene(scene);
 
-    HBox bottom = new HBox();
+        HBox bottom = new HBox();
 
-    //final Text debug = new Text();
+        //final Text debug = new Text();
 
-    Button genButton = new Button("Generate");
-    Button addButton = new Button("Add Term");
-    Button remButton = new Button("Remove Term");
+        Button genButton = new Button("Generate");
+        Button addButton = new Button("Add Term");
+        Button remButton = new Button("Remove Term");
 
-    javafx.scene.control.Label st = new javafx.scene.control.Label("Search Terms");
-    final ListView<String> searchTermDisplay = new ListView<String>();
+        javafx.scene.control.Label st = new javafx.scene.control.Label("Search Terms");
+        final ListView<String> searchTermDisplay = new ListView<String>();
 
-    final TextField addTagText = new TextField("Add tags here...");
+        final TextField addTagText = new TextField("Add tags here...");
 
         addTagText.setOnMouseClicked(new EventHandler<MouseEvent>() {
         @Override
@@ -49,30 +49,30 @@ public class GUI {
             if (addTagText.getCharacters().toString().compareTo("Add tags here...") == 0) {
                 addTagText.setText("");
             }
-        }
-    });
+            }
+        });
 
         genButton.setOnAction(new EventHandler<ActionEvent>() {
         @Override public void handle(ActionEvent e) {
             setDebugText("Generating");
             controller.generateReport();
-        }
-    });
+            }
+        });
 
         addButton.setOnAction(new EventHandler<ActionEvent>() {
         @Override public void handle(ActionEvent e) {
             setDebugText("Adding tag");
             controller.addItem(addTagText.getCharacters().toString());
             addTagText.setText("");
-        }
-    });
+                    }
+        });
 
         remButton.setOnAction(new EventHandler<ActionEvent>() {
         @Override public void handle(ActionEvent e) {
             setDebugText("Removing tag");
             controller.removeItem(searchTermDisplay.getSelectionModel().getSelectedIndex());
-        }
-    });
+                    }
+        });
 
         bottom.getChildren().addAll(genButton, addButton, remButton);
 
@@ -94,5 +94,9 @@ public class GUI {
 }
     static void setDebugText(String msg) {
         debug.setText(msg);
+    }
+
+    Stage getStage() {
+        return stage;
     }
 }

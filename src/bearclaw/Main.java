@@ -4,18 +4,13 @@ package bearclaw;
     bearclaw ebay price history amalgamator / spreadsheet generator
     tyler weston, dec 31st 2018
     what it does so far:
-    - need to fix these things since they are broken now that the program
-      is split into different classes, deal with this
     - can add / remove keywords
     - generate report for multiple items
     to do still:
     - saving the list <----------------------- next big thing to finish core functionality
-    - choosing where to save the excel to (!!) fix this entirely
     - add more options (ie what data to write to file !! )
     - add keyword name to top of each sheet
     - better gui functionality
-    - REFACTORING
-        - written very hackily right now
     dream features:
     - multiple lists?
     - in different categories?
@@ -25,6 +20,10 @@ package bearclaw;
     - save / load lists
     - allow different category IDs for
     - ??
+
+    bugs:
+    - menu shows up in the wrong place sometimes?
+    - exporting excel maybe not working?
  */
 
 

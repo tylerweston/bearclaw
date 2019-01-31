@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.text.Text;
 import javafx.scene.control.ListView;
+import javafx.stage.DirectoryChooser;
 import jxl.Workbook;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
@@ -33,9 +34,10 @@ public class Controller {
     ArrayList<String> searchTerms = new ArrayList<String>();    // do it this way so we can serialize this
     ObservableList<String> searchTermsObservable = observableArrayList(searchTerms);
     GUI gui;
+    Model model;
 
     public Controller(Model setModel) {
-//        this.model = setModel;
+        this.model = setModel;
     }
 
     public void setGUI(GUI gui) {
@@ -46,7 +48,7 @@ public class Controller {
     public boolean generateReport() {
         GUI.setDebugText("Generating report...");
         // first, open our excel sheet
-        String EXCEL_FILE_LOCATION = "/Users/tylerweston/Desktop/out.xls";
+        String EXCEL_FILE_LOCATION = model.getSaveDir().getPath() + "/out.xls";
 
         // create excel workbook
         WritableWorkbook excelOutput = null;
@@ -103,7 +105,6 @@ public class Controller {
 
     public boolean generateReportEntry(String keyword, WritableWorkbook excelOutput, int sheet) {
         // this will eventually be replaced with custom searches!
-//        String keywords = "tie%20domi";
 
         String keywords = keyword.replace(" ", "%20");
         int pageNum = 1;    // current page to search
@@ -285,5 +286,14 @@ public class Controller {
         } while (totalResults == maxResultsPerPage);
 
         return true;
+    }
+
+    void choosedir() {
+        DirectoryChooser dc = new DirectoryChooser();
+        dc.setTitle("select directory");
+        File desktop = new File(System.getProperty("user.home") + File.separator + "Desktop");
+        if (desktop != null) dc.setInitialDirectory(desktop);
+        File selectedFile = dc.showDialog(gui.getStage());
+        model.setSaveDir(selectedFile);
     }
 }

@@ -1,0 +1,40 @@
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<?import javafx.scene.control.ListView?>
+
+<GridPane fx:controller="bearclaw.Controller"
+          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
+    <Text text="BearClaw"
+          GridPane.columnIndex="0" GridPane.rowIndex="0"
+          GridPane.columnSpan="2"/>
+
+    <Label text="Search Terms"
+           GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+    <ListView fx:id="searchTerms"
+        GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+    <HBox spacing="10" alignment="bottom_right"
+          GridPane.columnIndex="1" GridPane.rowIndex="4">
+        <Button text="Generate Report"
+                onAction="#handleGenerateReport"/>
+        <Button text="Add Term"
+                onAction="#handleAddSearchTerm"/>
+        <Button text="Remove Term"
+                onAction="#handleRemoveSearchTerm"/>
+    </HBox>
+
+    <Text fx:id="actiontarget"
+          GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+
+</GridPane>

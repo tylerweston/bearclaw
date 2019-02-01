@@ -17,24 +17,16 @@ package bearclaw;
     - debug log window is buggy LUL
     - include saving the category ID with list so that you can have different lists
       for different categories (ie, load a list and it will automatically set category ID)
+        - this will involve changing the keyword list to be an object that includes both the
+          list and the category that is attached to the list
     - change report generating to handle different category IDS
-    - put category ids into a list to make choosing easier
+    - move things to packages?
+    - Change keywords away from just being observable list towards the KeywordList object?
+    - ORRRR just use keyword list object for saving and loading purposes?
+
 
     bugs:
     - menu shows up in the wrong place sometimes (?) only seen once, javafx problem /w ubuntu?
-
-    useful category IDS:
-    Collectibles	                    1
-    Antiques	                        20081
-    Art	                                550
-    Books	                            267
-    Video Games & Consoles	            1249
-    Coins & Paper Money	                11116
-    Music	                            11233
-    Toys & Hobbies	                    220
-    Sporting Goods	                    888
-    Sports Mem, Cards & Fan Shop	    64482
-    Entertainment Memorabilia	        45100
  */
 
 

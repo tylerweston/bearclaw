@@ -27,6 +27,26 @@ public class Model {
         // restore the directory we decided to save our excel output to
     }
 
+    /*
+     // on exit:
+
+     FileOutputStream fileOutputStream
+      = new FileOutputStream("yourfile.txt");
+    ObjectOutputStream objectOutputStream
+      = new ObjectOutputStream(fileOutputStream);
+    objectOutputStream.writeObject(person);
+    objectOutputStream.flush();
+    objectOutputStream.close();
+
+     // on load:
+    FileInputStream fileInputStream
+      = new FileInputStream("yourfile.txt");
+    ObjectInputStream objectInputStream
+      = new ObjectInputStream(fileInputStream);
+    Person p2 = (Person) objectInputStream.readObject();
+    objectInputStream.close();
+     */
+
     void addToDebug(String toAdd) {
         debugLog.add(toAdd);
     }

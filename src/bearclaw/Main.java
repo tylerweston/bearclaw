@@ -5,20 +5,20 @@ package bearclaw;
     tyler weston, dec 31st 2018
 
     todo:
-    - saving the list <----------------------- next big thing to finish core functionality\
-    - loading lists
+    - saving list now works for ONE default list
+    - make it so you can save / load multiple lists
     - add more options (ie what data to write to file !! )
     - add keyword name to top of each sheet (?)
-    - allow different category IDs for
+    - allow different category IDs
     - default settings (ie keywords that automatically load, default dir for saving)
     - don't generate repots if keywords are empty
     - cleaup GUI, move to XML with controllers and whatnot? how does that even work?
-    - Trying to remove tags with no tag selected results in a warning!
-    - shouldn't be able to add blank tags to key word list
     - debug log window is buggy LUL
+    - allow selecting multiple items in the keyword list to delete them all
+    - allow using delete key to remove keywords
 
     bugs:
-    - menu shows up in the wrong place sometimes (?) only seen once, javafx problem?
+    - menu shows up in the wrong place sometimes (?) only seen once, javafx problem /w ubuntu?
  */
 
 
@@ -73,16 +73,6 @@ http://svcs.ebay.com/services/search/FindingService/v1?
 
 
  */
-
-// to do:
-//  - easy gui
-//  - saving / loading list of information you want to scrape
-//  x how to make calls / receive data back
-//  - validate call was a success by checking ACK data
-//  - now that we have data, how do we pull out the information we need?
-//  - how can we make sure we only get the information we want instead of all of it?
-//  - how to parse the JSON that is returned?
-//  - how to write this information to a spreadsheet?
 
 // app key:
 // TylerWes-BearClaw-PRD-7bddb6120-21fb4e35

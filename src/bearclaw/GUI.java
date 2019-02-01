@@ -55,9 +55,9 @@ public class GUI {
         @Override
         public void handle(MouseEvent event) {
             // if we click on the box for the first time, erase it's contents
-            if (addTagText.getCharacters().toString().compareTo("Add tags here...") == 0) {
-                addTagText.setText("");
-            }
+                if (addTagText.getCharacters().toString().compareTo("Add tags here...") == 0) {
+                    addTagText.setText("");
+                }
             }
         });
 
@@ -73,14 +73,15 @@ public class GUI {
             setDebugText("Adding tag");
             controller.addItem(addTagText.getCharacters().toString());
             addTagText.setText("");
-                    }
+            }
         });
 
         remButton.setOnAction(new EventHandler<ActionEvent>() {
         @Override public void handle(ActionEvent e) {
             setDebugText("Removing tag");
-            controller.removeItem(searchTermDisplay.getSelectionModel().getSelectedIndex());
-                    }
+            int selectIndex = searchTermDisplay.getSelectionModel().getSelectedIndex();
+            if (selectIndex != -1) controller.removeItem(selectIndex);
+            }
         });
 
         bottom.getChildren().addAll(genButton, addButton, remButton);

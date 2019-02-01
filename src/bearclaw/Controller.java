@@ -1,6 +1,7 @@
 package bearclaw;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -107,6 +108,7 @@ public class Controller {
     }
 
     public boolean addItem(String toAdd) {
+        if ("".compareTo(toAdd) != 0 && "Add tags here...".compareTo(toAdd) != 0)
         searchTermsObservable.add(toAdd);
         return true;
     }
@@ -360,6 +362,37 @@ public class Controller {
 
     void addDebugLog(String msg) {
         model.addToDebug(msg);
+    }
+
+    void saveKeywords() {
+        try {
+            FileOutputStream fileOutputStream
+                    = new FileOutputStream("default.bc");
+            ObjectOutputStream objectOutputStream
+                    = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(new ArrayList<String>(searchTermsObservable));
+            objectOutputStream.flush();
+            objectOutputStream.close();
+        } catch (IOException e) {
+            addDebugLog("Can't write default keywords");
+        }
+    }
+
+    void loadKeywords() {
+        try {
+            FileInputStream fileInputStream
+                    = new FileInputStream("default.bc");
+            ObjectInputStream objectInputStream
+                    = new ObjectInputStream(fileInputStream);
+            ArrayList<String> list = (ArrayList<String>) objectInputStream.readObject();
+            searchTermsObservable.clear();
+            searchTermsObservable.addAll(list);
+            objectInputStream.close();
+        } catch (IOException e) {
+            addDebugLog("Cannot load default keywords");
+        } catch (ClassNotFoundException e) {
+            addDebugLog("Default keywords file corrupt");
+        }
     }
 
     void showAbout() {

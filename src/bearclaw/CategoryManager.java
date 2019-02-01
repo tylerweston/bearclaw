@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class CategoryManager {
 
-    private ArrayList<Categories> categories = new ArrayList<Categories>();
+    private static ArrayList<Categories> categories = new ArrayList<Categories>();
 
     public CategoryManager() {
         categories.add(new Categories("Collectibles", 1));

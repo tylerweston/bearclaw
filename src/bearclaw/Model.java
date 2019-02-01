@@ -16,6 +16,7 @@ public class Model {
     // - whatever directory we chose to save the data to (or have a set default option?)
     // - load whichever keyword list was the last one that we used
     // -
+    CategoryManager catManager;
 
     public Model() {
         // init stuff here
@@ -25,6 +26,7 @@ public class Model {
         // when we first get initialized we want to do some things:
         // find out if we have a default keyword list, and if yes, save it
         // restore the directory we decided to save our excel output to
+        catManager = new CategoryManager();
     }
 
     void addToDebug(String toAdd) {
@@ -41,5 +43,9 @@ public class Model {
 
     File getSaveDir() {
         return this.saveDir;
+    }
+
+    CategoryManager getCatMan() {
+        return catManager;
     }
 }

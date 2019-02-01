@@ -9,12 +9,12 @@ import static javafx.collections.FXCollections.observableArrayList;
 
 
 public class KeywordList implements Serializable {
-    ArrayList<String> keywords;
+    ArrayList<String> keywords = new ArrayList<>();
     // or use ObservableList<T> observableList = FXCollections.observableArrayList(); ??
 
     // currently in controller uses:
     // ArrayList<String> searchTerms = new ArrayList<>();    // do it this way so we can serialize this
-    // ObservableList<String> searchTermsObservable = observableArrayList(searchTerms);
+     ObservableList<String> keywordsObservable = observableArrayList(keywords);
     Categories myCategory;
 
     public KeywordList() {
@@ -29,20 +29,24 @@ public class KeywordList implements Serializable {
         return keywords;
     }
 
+    ObservableList<String> getKeywordsObservable() {
+        return keywordsObservable;
+    }
+
     public void addKeyword(String kword) {
-        keywords.add(kword);
+        keywordsObservable.add(kword);
     }
 
     public void removeKeyword(String kword) {
-        keywords.remove(kword);
+        keywordsObservable.remove(kword);
     }
 
     public void removeKeyword(int index) {
-        keywords.remove(index);
+        keywordsObservable.remove(index);
     }
 
     public void removeKeywords(ArrayList<String> kwords) {
-        keywords.removeAll(kwords);
+        keywordsObservable.removeAll(kwords);
     }
 
 }

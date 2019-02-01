@@ -29,8 +29,9 @@ import static javafx.collections.FXCollections.observableArrayList;
 
 public class Controller {
 
-    ArrayList<String> searchTerms = new ArrayList<>();    // do it this way so we can serialize this
-    ObservableList<String> searchTermsObservable = observableArrayList(searchTerms);
+//    ArrayList<String> searchTerms = new ArrayList<>();    // do it this way so we can serialize this
+//    ObservableList<String> searchTermsObservable = observableArrayList(searchTerms);
+    KeywordList kwords = new KeywordList();
     private GUI gui;
     private Model model;
 
@@ -101,7 +102,7 @@ public class Controller {
 
         // create excel sheet
         int sheet = 0;
-        for (String keyword : searchTermsObservable) {
+        for (String keyword : kwords.getKeywords()) {
             model.addToDebug("generating report for " + keyword +" on sheet "+sheet);
             // pass the excel sheet to this function
             generateReportEntry(keyword, excelOutput, sheet);
@@ -310,11 +311,15 @@ public class Controller {
 
     // Keyword management functions here
 
+    KeywordList getKwords() {
+        return kwords;
+    }
+
     public boolean addItem(String toAdd) {
         toAdd = toAdd.trim();
         if ("".compareTo(toAdd) != 0 && "Add tags here...".compareTo(toAdd) != 0) {
-            if (!searchTermsObservable.contains(toAdd)) {
-                searchTermsObservable.add(toAdd);
+            if (!kwords.getKeywords().contains(toAdd)) {
+                kwords.addKeyword(toAdd);
                 return true;
             }
             model.addToDebug("Attempting to add duplicate key words");
@@ -323,12 +328,12 @@ public class Controller {
     }
 
     public boolean removeItem(int toRemove){
-        searchTermsObservable.remove(toRemove);
+        kwords.removeKeyword(toRemove);
         return true;
     }
 
     public boolean removeItems(ArrayList<String> toRemove){
-        searchTermsObservable.removeAll(toRemove);
+        kwords.removeKeywords(toRemove);
         return true;
     }
 
@@ -380,6 +385,10 @@ public class Controller {
         saveKeywords("default");
     }
 
+    Model getModel() {
+        return model;
+    }
+
     void saveKeywords(String fileName) {
         if (!fileName.contains(".")) {
             fileName += ".bc";
@@ -389,7 +398,7 @@ public class Controller {
                     = new FileOutputStream(fileName);
             ObjectOutputStream objectOutputStream
                     = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(new ArrayList<String>(searchTermsObservable));
+            objectOutputStream.writeObject(kwords);
             objectOutputStream.flush();
             objectOutputStream.close();
         } catch (IOException e) {
@@ -410,9 +419,10 @@ public class Controller {
                     = new FileInputStream(fileName);
             ObjectInputStream objectInputStream
                     = new ObjectInputStream(fileInputStream);
-            ArrayList<String> list = (ArrayList<String>) objectInputStream.readObject();
-            searchTermsObservable.clear();
-            searchTermsObservable.addAll(list);
+//            ArrayList<String> list = (ArrayList<String>) objectInputStream.readObject();
+//            searchTermsObservable.clear();
+//            searchTermsObservable.addAll(list);
+            kwords = (KeywordList) objectInputStream.readObject();
             objectInputStream.close();
         } catch (IOException e) {
             addDebugLog("Cannot load default keywords");

@@ -7,7 +7,8 @@ package bearclaw;
     todo:
 
     - detect if keywords has changed since last save, prompt to save if so
-    -
+    - loading keywords is not acting as expected right now
+    - need to select a default category for category ID?
 
     - add more options (ie what data to write to file !! )
     - add keyword name to top of each sheet (?)
@@ -21,8 +22,7 @@ package bearclaw;
           list and the category that is attached to the list
     - change report generating to handle different category IDS
     - move things to packages?
-    - Change keywords away from just being observable list towards the KeywordList object?
-    - ORRRR just use keyword list object for saving and loading purposes?
+    - Loading keywords does NOT work yet, fix this
 
 
     bugs:

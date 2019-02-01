@@ -28,12 +28,12 @@ class MainMenu extends MenuBar {
 
         MenuItem fileOpen = new MenuItem("_Open");
         fileOpen.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.SHORTCUT_DOWN));
-        fileOpen.setOnAction((ae) -> controller.loadKeywords());
+        fileOpen.setOnAction((ae) -> controller.fileLoad());
         fileMenu.getItems().add(fileOpen);
 
         MenuItem fileSave = new MenuItem("_Save");
         fileSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN));
-        fileSave.setOnAction((ae) -> controller.saveKeywords());
+        fileSave.setOnAction((ae) -> controller.fileSave());
         fileMenu.getItems().add(fileSave);
 
         MenuItem moveItem = new MenuItem("_Choose");

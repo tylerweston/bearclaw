@@ -1,7 +1,6 @@
 package bearclaw;
 
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -9,6 +8,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import jxl.Workbook;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
@@ -40,6 +40,9 @@ public class Controller {
 
     public Controller(Model setModel) {
         this.model = setModel;
+        if (hasDefault()) {
+            loadKeywords();
+        }
     }
 
     public void setGUI(GUI gui) {
@@ -313,11 +316,29 @@ public class Controller {
     }
 
     void fileLoad() {
-        // do loading here
+        // do saving here
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Load Keywords");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("BearClaw Keywords", "*.bc"),
+                new FileChooser.ExtensionFilter("All Files", "*.*"));
+        File selectedFile = fileChooser.showOpenDialog(gui.getStage());
+        if (selectedFile != null) {
+            loadKeywords(selectedFile.toString());
+        }
     }
 
     void fileSave() {
         // do saving here
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Keywords");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("BearClaw Keywords", "*.bc"),
+                new FileChooser.ExtensionFilter("All Files", "*.*"));
+        File selectedFile = fileChooser.showSaveDialog(gui.getStage());
+        if (selectedFile != null) {
+            saveKeywords(selectedFile.toString());
+        }
     }
 
     void batchGenerate() {
@@ -365,9 +386,15 @@ public class Controller {
     }
 
     void saveKeywords() {
+        saveKeywords("default");
+    }
+    void saveKeywords(String fileName) {
+        if (!fileName.contains(".")) {
+            fileName += ".bc";
+        }
         try {
             FileOutputStream fileOutputStream
-                    = new FileOutputStream("default.bc");
+                    = new FileOutputStream(fileName);
             ObjectOutputStream objectOutputStream
                     = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(new ArrayList<String>(searchTermsObservable));
@@ -377,11 +404,16 @@ public class Controller {
             addDebugLog("Can't write default keywords");
         }
     }
-
     void loadKeywords() {
+        loadKeywords("default");
+    }
+    void loadKeywords(String fileName) {
+        if (!fileName.contains(".")) {
+            fileName += ".bc";
+        }
         try {
             FileInputStream fileInputStream
-                    = new FileInputStream("default.bc");
+                    = new FileInputStream(fileName);
             ObjectInputStream objectInputStream
                     = new ObjectInputStream(fileInputStream);
             ArrayList<String> list = (ArrayList<String>) objectInputStream.readObject();
@@ -402,5 +434,11 @@ public class Controller {
         alert.setContentText("This is where the about message will go, I guess.");
 
         alert.showAndWait();
+    }
+
+    boolean hasDefault() {
+        File tmpDir = new File("default.bc");
+        boolean exists = tmpDir.exists();
+        return exists;
     }
 }

@@ -39,8 +39,11 @@ public class Controller {
 
     public Controller(Model setModel) {
         this.model = setModel;
-        if (hasDefault()) {
+        if (hasDefaultKeywords()) {
             loadKeywords();
+        }
+        if (hasDefaultFolder()) {
+            getDefaultFolder();
         }
     }
 
@@ -435,7 +438,24 @@ public class Controller {
         alert.showAndWait();
     }
 
-    boolean hasDefault() {
+    void setDefaultFolder() {
+        // save default saving folder here
+        // to do: serialize the file that points to our default folder for saving
+    }
+
+    void getDefaultFolder() {
+        // load default saving folder here
+        // to do: deserialize the file and set default folder
+    }
+
+    boolean hasDefaultFolder() {
+        // check if we have a default folder saved
+        File tmpDir = new File("prefs.bc");
+        boolean exists = tmpDir.exists();
+        return exists;
+    }
+
+    boolean hasDefaultKeywords() {
         File tmpDir = new File("default.bc");
         boolean exists = tmpDir.exists();
         return exists;

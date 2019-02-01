@@ -59,7 +59,7 @@ class MainMenu extends MenuBar {
         MenuItem toolsBatchGenerate = new MenuItem("_Batch Generate");
         toolsBatchGenerate.setAccelerator(new KeyCodeCombination(KeyCode.B, KeyCombination.SHORTCUT_DOWN));
         toolsBatchGenerate.setOnAction((ae) -> controller.batchGenerate());
-//        toolsBatchGenerate.disableProperty().bind(setDisabled);
+        toolsBatchGenerate.disableProperty().bind(setDisabled);
 
 
         MenuItem toolsDebugLog = new MenuItem("_Log");
@@ -68,16 +68,21 @@ class MainMenu extends MenuBar {
 //        toolsRenamingLog.disableProperty().bind(setDisabled);
 
 
-//        MenuItem toolsTagFolder = new MenuItem("Tag _Folder");
-//        toolsTagFolder.setAccelerator(new KeyCodeCombination(KeyCode.F, KeyCombination.SHORTCUT_DOWN));
-//        toolsTagFolder.setOnAction((ae) -> controller.TagFolder());
+        MenuItem toolsSetDefaultKeywords = new MenuItem("Set _Default Keywords");
+        toolsSetDefaultKeywords.setAccelerator(new KeyCodeCombination(KeyCode.D, KeyCombination.SHORTCUT_DOWN));
+        toolsSetDefaultKeywords.setOnAction((ae) -> controller.saveKeywords());
 
+        MenuItem toolsSetDefaultFolder = new MenuItem("Set Default _Folder");
+        toolsSetDefaultFolder.setAccelerator(new KeyCodeCombination(KeyCode.F, KeyCombination.SHORTCUT_DOWN));
+        toolsSetDefaultFolder.setOnAction((ae) -> controller.setDefaultFolder());
 
 
         toolsMenu.getItems().add(toolsBatchGenerate);
-//        toolsMenu.getItems().add(new SeparatorMenuItem());
+        toolsMenu.getItems().add(toolsSetDefaultKeywords);
+        toolsMenu.getItems().add(toolsSetDefaultFolder);
+        toolsMenu.getItems().add(new SeparatorMenuItem());
         toolsMenu.getItems().add(toolsDebugLog);
-//        toolsMenu.getItems().add(toolsTagFolder);
+
 
 
         // about menu

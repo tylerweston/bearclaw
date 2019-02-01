@@ -7,7 +7,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -18,17 +20,27 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+import java.util.ArrayList;
+
+import static com.sun.org.apache.xerces.internal.utils.SecuritySupport.getResourceAsStream;
+
 public class GUI {
     static Text debug = new Text();
 
     private final Controller controller;
     private final Stage stage;
     private final MainMenu controllerMenu;
+    ArrayList<String> sItems;
+    ListView<String> searchTermDisplay = new ListView<String>();
 
     public GUI(Stage primaryStage, Controller setController) {
         this.controller = setController;
         stage = primaryStage;
+        // set icon
+        stage.getIcons().add(
+                new Image(GUI.class.getResourceAsStream( "icon.png" )));
 
+        // handle exit
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
@@ -51,13 +63,16 @@ public class GUI {
         Button remButton = new Button("Remove Term");
 
         javafx.scene.control.Label st = new javafx.scene.control.Label("Search Terms");
-        final ListView<String> searchTermDisplay = new ListView<String>();
+        searchTermDisplay = new ListView<String>();
+        searchTermDisplay.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        searchTermDisplay.getSelectionModel().selectedItemProperty()
+                .addListener((c, oldSelect, newSelect) ->
+                        sItems = new ArrayList<>(searchTermDisplay.getSelectionModel().getSelectedItems()));
 
         // remove items by pressing delete or backspace key
         searchTermDisplay.setOnKeyPressed((ke) -> {
             if (ke.getCode() == KeyCode.DELETE || ke.getCode() == KeyCode.BACK_SPACE) {
-                int selectIndex = searchTermDisplay.getSelectionModel().getSelectedIndex();
-                if (selectIndex != -1) controller.removeItem(selectIndex);
+                doDelete();
             }
         });
 
@@ -93,10 +108,8 @@ public class GUI {
 
         // remove a keyword
         remButton.setOnAction(new EventHandler<ActionEvent>() {
-        @Override public void handle(ActionEvent e) {
-            setDebugText("Removing tag");
-            int selectIndex = searchTermDisplay.getSelectionModel().getSelectedIndex();
-            if (selectIndex != -1) controller.removeItem(selectIndex);
+            @Override public void handle(ActionEvent e) {
+                doDelete();
             }
         });
 
@@ -109,6 +122,7 @@ public class GUI {
         GridPane.setMargin(st, defIn);
         GridPane.setMargin(searchTermDisplay, defIn);
         GridPane.setMargin(addTagText, defIn);
+        GridPane.setMargin(debug, defIn);
 
         // add everything to our gridpane
         root.add(st,1,1);
@@ -130,6 +144,18 @@ public class GUI {
     void setDebugText(String msg) {
         debug.setText(msg);
         controller.addDebugLog(msg);
+    }
+
+    void doDelete() {
+        setDebugText("Removing tag");
+        if (sItems.size() != 0) {
+            controller.removeItems(sItems);
+            setDebugText("Deleting multiple items!");
+            System.out.println(sItems.toString());
+        } else {
+            int selectIndex = searchTermDisplay.getSelectionModel().getSelectedIndex();
+            if (selectIndex != -1) controller.removeItem(selectIndex);
+        }
     }
 
     Stage getStage() {

@@ -38,7 +38,7 @@ class MainMenu extends MenuBar {
 
         MenuItem moveItem = new MenuItem("_Choose");
         moveItem.setAccelerator(new KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN));
-        moveItem.setOnAction((ae) -> controller.choosedir());
+        moveItem.setOnAction((ae) -> controller.chooseDir());
         fileMenu.getItems().add(moveItem);
 
         fileMenu.getItems().add(new SeparatorMenuItem());

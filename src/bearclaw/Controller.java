@@ -25,7 +25,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -121,6 +120,12 @@ public class Controller {
         return true;
     }
 
+    public boolean removeItems(ArrayList<String> toRemove){
+
+        searchTermsObservable.removeAll(toRemove);
+        return true;
+    }
+
     public boolean generateReportEntry(String keyword, WritableWorkbook excelOutput, int sheet) {
         // this will eventually be replaced with custom searches!
 
@@ -211,13 +216,7 @@ public class Controller {
                     doc = DocumentBuilderFactory.newInstance()
                             .newDocumentBuilder()
                             .parse(new InputSource(new StringReader(response.toString())));
-                } catch (ParserConfigurationException e) {
-                    e.printStackTrace();
-                    return false;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return false;
-                } catch (SAXException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     return false;
                 }
@@ -303,7 +302,7 @@ public class Controller {
         return true;
     }
 
-    void choosedir() {
+    void chooseDir() {
         DirectoryChooser dc = new DirectoryChooser();
         dc.setTitle("select directory");
         File desktop = new File(System.getProperty("user.home") + File.separator + "Desktop");

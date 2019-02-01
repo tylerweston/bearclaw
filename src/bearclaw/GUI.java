@@ -2,14 +2,18 @@ package bearclaw;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -49,8 +53,17 @@ public class GUI {
         javafx.scene.control.Label st = new javafx.scene.control.Label("Search Terms");
         final ListView<String> searchTermDisplay = new ListView<String>();
 
+        // remove items by pressing delete or backspace key
+        searchTermDisplay.setOnKeyPressed((ke) -> {
+            if (ke.getCode() == KeyCode.DELETE || ke.getCode() == KeyCode.BACK_SPACE) {
+                int selectIndex = searchTermDisplay.getSelectionModel().getSelectedIndex();
+                if (selectIndex != -1) controller.removeItem(selectIndex);
+            }
+        });
+
         final TextField addTagText = new TextField("Add tags here...");
 
+        // if you clicked the text field and it still says "Add tags here..." clear it for user
         addTagText.setOnMouseClicked(new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent event) {
@@ -61,6 +74,7 @@ public class GUI {
             }
         });
 
+        // generate a report
         genButton.setOnAction(new EventHandler<ActionEvent>() {
         @Override public void handle(ActionEvent e) {
             setDebugText("Generating");
@@ -68,6 +82,7 @@ public class GUI {
             }
         });
 
+        // add a keyword
         addButton.setOnAction(new EventHandler<ActionEvent>() {
         @Override public void handle(ActionEvent e) {
             setDebugText("Adding tag");
@@ -76,6 +91,7 @@ public class GUI {
             }
         });
 
+        // remove a keyword
         remButton.setOnAction(new EventHandler<ActionEvent>() {
         @Override public void handle(ActionEvent e) {
             setDebugText("Removing tag");
@@ -84,11 +100,17 @@ public class GUI {
             }
         });
 
+        // build bottom buttons
         bottom.getChildren().addAll(genButton, addButton, remButton);
+        bottom.setAlignment(Pos.CENTER);
 
+        // set default insets
+        Insets defIn = new Insets(5,5,5,5);
+        GridPane.setMargin(st, defIn);
+        GridPane.setMargin(searchTermDisplay, defIn);
+        GridPane.setMargin(addTagText, defIn);
 
-
-
+        // add everything to our gridpane
         root.add(st,1,1);
         root.add(searchTermDisplay, 1, 2);
         root.add(addTagText, 1,3);
@@ -96,12 +118,15 @@ public class GUI {
         root.add(debug, 1, 5);
         searchTermDisplay.setItems(controller.searchTermsObservable);
 
+        // build main menu
         controllerMenu = new MainMenu(controller);
         controllerMenu.prefWidthProperty().bind(scene.widthProperty());
         root.add(controllerMenu,1,0);
 
+        // show everything!
         primaryStage.show();
 }
+
     void setDebugText(String msg) {
         debug.setText(msg);
         controller.addDebugLog(msg);

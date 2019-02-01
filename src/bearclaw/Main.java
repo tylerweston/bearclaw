@@ -6,16 +6,13 @@ package bearclaw;
 
     todo:
     - saving list now works for ONE default list
-    - make it so you can save / load multiple lists
     - add more options (ie what data to write to file !! )
     - add keyword name to top of each sheet (?)
     - allow different category IDs
-    - default settings (ie keywords that automatically load, default dir for saving)
     - don't generate repots if keywords are empty
     - cleaup GUI, move to XML with controllers and whatnot? how does that even work?
     - debug log window is buggy LUL
     - allow selecting multiple items in the keyword list to delete them all
-    - allow using delete key to remove keywords
 
     bugs:
     - menu shows up in the wrong place sometimes (?) only seen once, javafx problem /w ubuntu?

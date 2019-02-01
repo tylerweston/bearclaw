@@ -33,7 +33,7 @@ import static javafx.collections.FXCollections.observableArrayList;
 
 public class Controller {
 
-    ArrayList<String> searchTerms = new ArrayList<String>();    // do it this way so we can serialize this
+    ArrayList<String> searchTerms = new ArrayList<>();    // do it this way so we can serialize this
     ObservableList<String> searchTermsObservable = observableArrayList(searchTerms);
     GUI gui;
     Model model;
@@ -186,10 +186,7 @@ public class Controller {
             try {
                 connection.setRequestMethod("GET");
                 responseCode = connection.getResponseCode();
-            } catch (ProtocolException e) {
-                e.printStackTrace();
-                return false;
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return false;
             }
@@ -354,7 +351,10 @@ public class Controller {
 
         Label label = new Label("Log:");
 
-        TextArea textArea = new TextArea(model.getDebugLog().toString().replace(",","\n"));
+        String disp = model.getDebugLog().toString();
+        disp = disp.substring(1, disp.length() - 1);
+        disp = disp.replace(",","\n");
+        TextArea textArea = new TextArea(disp);
         textArea.setEditable(false);
         textArea.setWrapText(true);
 

@@ -12,17 +12,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.util.ArrayList;
-
-import static com.sun.org.apache.xerces.internal.utils.SecuritySupport.getResourceAsStream;
 
 public class GUI {
     static Text debug = new Text();
@@ -32,6 +28,7 @@ public class GUI {
     private final MainMenu controllerMenu;
     ArrayList<String> sItems;
     ListView<String> searchTermDisplay = new ListView<String>();
+    TextField addTagText;
 
     public GUI(Stage primaryStage, Controller setController) {
         this.controller = setController;
@@ -76,7 +73,7 @@ public class GUI {
             }
         });
 
-        final TextField addTagText = new TextField("Add tags here...");
+        addTagText = new TextField("Add tags here...");
 
         // if you clicked the text field and it still says "Add tags here..." clear it for user
         addTagText.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -89,6 +86,13 @@ public class GUI {
             }
         });
 
+        // add tags by pressing enter
+        addTagText.setOnKeyPressed((ke) -> {
+            if (ke.getCode() == KeyCode.ENTER) {
+                addKeyword();
+            }
+        });
+
         // generate a report
         genButton.setOnAction(new EventHandler<ActionEvent>() {
         @Override public void handle(ActionEvent e) {
@@ -97,14 +101,14 @@ public class GUI {
             }
         });
 
-        // add a keyword
+        // add a keyword button
         addButton.setOnAction(new EventHandler<ActionEvent>() {
         @Override public void handle(ActionEvent e) {
-            setDebugText("Adding tag");
-            controller.addItem(addTagText.getCharacters().toString());
-            addTagText.setText("");
+                addKeyword();
             }
         });
+
+
 
         // remove a keyword
         remButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -139,19 +143,27 @@ public class GUI {
 
         // show everything!
         primaryStage.show();
-}
+    }
 
     void setDebugText(String msg) {
         debug.setText(msg);
-        controller.addDebugLog(msg);
+    }
+
+    void addKeyword() {
+        controller.addItem(addTagText.getCharacters().toString());
+        addTagText.setText("");
+        addTagText.requestFocus();
     }
 
     void doDelete() {
-        setDebugText("Removing tag");
+        controller.addDebugLog("Removing tag");
+        // todo:
+        // play around with this still, looks like there could very well
+        // be mistakes in this implementation
+
         if (sItems.size() != 0) {
             controller.removeItems(sItems);
-            setDebugText("Deleting multiple items!");
-            System.out.println(sItems.toString());
+            controller.addDebugLog("Deleting multiple items!");
         } else {
             int selectIndex = searchTermDisplay.getSelectionModel().getSelectedIndex();
             if (selectIndex != -1) controller.removeItem(selectIndex);

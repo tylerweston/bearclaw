@@ -34,16 +34,18 @@ public class Controller {
     private GUI gui;
     private Model model;
 
+    // Main Controller functions here
+
     public Controller(Model setModel) {
         this.model = setModel;
         if (hasDefaultKeywords()) {
-            gui.setDebugText("Found default keywords! Loading.");
+            model.addToDebug("Found default keywords! Loading.");
             loadKeywords();
         }
         if (hasDefaultFolder()) {
-            gui.setDebugText("Found default save folder! Loading.");
+            model.addToDebug("Found default save folder! Loading.");
             getDefaultFolder();
-            gui.setDebugText("Set default save folder to "+model.getSaveDir().toString());
+            model.addToDebug("Set default save folder to "+model.getSaveDir().toString());
         }
     }
 
@@ -51,12 +53,26 @@ public class Controller {
         this.gui = gui;
     }
 
+    void doExit() {
+        // to do here:
+        // clean up and save any data, etc as necessary
+        Platform.exit();
+        System.exit(0);
+    }
+
+    // Report generating functions here
+
+    void batchGenerate() {
+        // todo:
+        // crawl through the current save directory and generate reports for ALL keywords
+        // lists that are in that folder
+    }
 
     public boolean generateReport() {
-        gui.setDebugText("Generating report...");
+        model.addToDebug("Generating report...");
         // first, open our excel sheet
         if (model.getSaveDir() == null) {
-            gui.setDebugText("No output folder selected");
+            model.addToDebug("No output folder selected");
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("UH OH");
             alert.setHeaderText(null);
@@ -65,7 +81,7 @@ public class Controller {
             alert.showAndWait();
             return false;
         }
-        gui.setDebugText("Writing to " + model.getSaveDir().toString());
+        model.addToDebug("Writing to " + model.getSaveDir().toString());
 
         String excelFileName = "/out.xls";
         String excelFileLocation = model.getSaveDir().getPath() + excelFileName;
@@ -86,13 +102,13 @@ public class Controller {
         // create excel sheet
         int sheet = 0;
         for (String keyword : searchTermsObservable) {
-            gui.setDebugText("generating report for " + keyword +" on sheet "+sheet);
+            model.addToDebug("generating report for " + keyword +" on sheet "+sheet);
             // pass the excel sheet to this function
             generateReportEntry(keyword, excelOutput, sheet);
             sheet++;
         }
         // now, write everything
-        gui.setDebugText("Writing to report...");
+        model.addToDebug("Writing to report...");
         try {
             excelOutput.write();
         } catch (IOException e) {
@@ -101,7 +117,7 @@ public class Controller {
             e.printStackTrace();
             return false;
         }
-        gui.setDebugText("Closing report...");
+        model.addToDebug("Closing report...");
         // close book
         if (excelOutput != null) {
             try {
@@ -112,24 +128,7 @@ public class Controller {
                 e.printStackTrace();
             }
         }
-        gui.setDebugText("Success");
-        return true;
-    }
-
-    public boolean addItem(String toAdd) {
-        if ("".compareTo(toAdd) != 0 && "Add tags here...".compareTo(toAdd) != 0)
-        searchTermsObservable.add(toAdd);
-        return true;
-    }
-
-    public boolean removeItem(int toRemove){
-        searchTermsObservable.remove(toRemove);
-        return true;
-    }
-
-    public boolean removeItems(ArrayList<String> toRemove){
-
-        searchTermsObservable.removeAll(toRemove);
+        model.addToDebug("Success");
         return true;
     }
 
@@ -236,7 +235,7 @@ public class Controller {
 //                System.out.println(rroot.getTagName()); // should be findCompleted..something
 //                System.out.println(got_results); // this should be SUCCESS to make sure it is good
                 if (got_results.compareTo("Success") != 0) {
-                    gui.setDebugText("Bad ack from eBay");
+                    model.addToDebug("Bad ack from eBay");
                     return false;
                 }
 
@@ -298,10 +297,10 @@ public class Controller {
 
 
 
-                gui.setDebugText("found " + totalResults + " items on page " + (pageNum-1));
+                model.addToDebug("found " + totalResults + " items on page " + (pageNum-1));
 
             } else {
-                gui.setDebugText("GET NOT WORKED");
+                model.addToDebug("GET NOT WORKED");
                 return false;
             }
         } while (totalResults == maxResultsPerPage);
@@ -309,17 +308,35 @@ public class Controller {
         return true;
     }
 
-    void chooseDir() {
-        DirectoryChooser dc = new DirectoryChooser();
-        dc.setTitle("select directory");
-        File desktop = new File(System.getProperty("user.home") + File.separator + "Desktop");
-        if (desktop != null) dc.setInitialDirectory(desktop);
-        File selectedFile = dc.showDialog(gui.getStage());
-        model.setSaveDir(selectedFile);
-        if (!hasDefaultFolder()) {
-            boolean doSetDefaultFolder = saveDefaultDialog("save folder");
-            if (doSetDefaultFolder) setDefaultFolder();
+    // Keyword management functions here
+
+    public boolean addItem(String toAdd) {
+        toAdd = toAdd.trim();
+        if ("".compareTo(toAdd) != 0 && "Add tags here...".compareTo(toAdd) != 0) {
+            if (!searchTermsObservable.contains(toAdd)) {
+                searchTermsObservable.add(toAdd);
+                return true;
+            }
+            model.addToDebug("Attempting to add duplicate key words");
         }
+        return false;
+    }
+
+    public boolean removeItem(int toRemove){
+        searchTermsObservable.remove(toRemove);
+        return true;
+    }
+
+    public boolean removeItems(ArrayList<String> toRemove){
+        searchTermsObservable.removeAll(toRemove);
+        return true;
+    }
+
+    // Keyword management functions
+
+    boolean hasDefaultKeywords() {
+        File tmpDir = new File("default.bc");
+        return tmpDir.exists();
     }
 
     void fileLoad() {
@@ -359,57 +376,10 @@ public class Controller {
         }
     }
 
-    void batchGenerate() {
-        // here we go through an entire directory and make reports for EVERY
-        // bearclaw keyword list in there
-    }
-
-    void openLog() {
-        // show debug log information here, this only persists per session
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Debug Log");
-        alert.setHeaderText("Debug info for this session");
-
-        Label label = new Label("Log:");
-
-        String disp = model.getDebugLog().toString();
-        disp = disp.substring(1, disp.length() - 1);
-        disp = disp.replace(",","\n");
-        TextArea textArea = new TextArea(disp);
-        textArea.setEditable(false);
-        textArea.setWrapText(true);
-
-        textArea.setMaxWidth(Double.MAX_VALUE);
-        textArea.setMaxHeight(Double.MAX_VALUE);
-        GridPane.setVgrow(textArea, Priority.ALWAYS);
-        GridPane.setHgrow(textArea, Priority.ALWAYS);
-
-        GridPane expContent = new GridPane();
-        expContent.setMaxWidth(Double.MAX_VALUE);
-        expContent.add(label, 0, 0);
-        expContent.add(textArea, 0, 1);
-
-// Set expandable Exception into the dialog pane.
-        alert.getDialogPane().setExpandableContent(expContent);
-        alert.getDialogPane().setExpanded(true);
-
-        alert.showAndWait();
-    }
-
-    void doExit() {
-        // to do here:
-        // clean up and save any data, etc as necessary
-        Platform.exit();
-        System.exit(0);
-    }
-
-    void addDebugLog(String msg) {
-        model.addToDebug(msg);
-    }
-
     void saveKeywords() {
         saveKeywords("default");
     }
+
     void saveKeywords(String fileName) {
         if (!fileName.contains(".")) {
             fileName += ".bc";
@@ -426,9 +396,11 @@ public class Controller {
             addDebugLog("Can't write default keywords");
         }
     }
+
     void loadKeywords() {
         loadKeywords("default");
     }
+
     void loadKeywords(String fileName) {
         if (!fileName.contains(".")) {
             fileName += ".bc";
@@ -449,13 +421,25 @@ public class Controller {
         }
     }
 
-    void showAbout() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("About");
-        alert.setHeaderText(null);
-        alert.setContentText("This is where the about message will go, I guess.");
+    // Save folder functions
 
-        alert.showAndWait();
+    boolean hasDefaultFolder() {
+        // check if we have a default folder saved
+        File tmpDir = new File("prefs.bc");
+        return tmpDir.exists();
+    }
+
+    void chooseDir() {
+        DirectoryChooser dc = new DirectoryChooser();
+        dc.setTitle("select directory");
+        File desktop = new File(System.getProperty("user.home") + File.separator + "Desktop");
+        if (desktop != null) dc.setInitialDirectory(desktop);
+        File selectedFile = dc.showDialog(gui.getStage());
+        model.setSaveDir(selectedFile);
+        if (!hasDefaultFolder()) {
+            boolean doSetDefaultFolder = saveDefaultDialog("save folder");
+            if (doSetDefaultFolder) setDefaultFolder();
+        }
     }
 
     void setDefaultFolder() {
@@ -492,11 +476,45 @@ public class Controller {
         }
     }
 
-    boolean hasDefaultFolder() {
-        // check if we have a default folder saved
-        File tmpDir = new File("prefs.bc");
-        return tmpDir.exists();
+    // Debug Log functions
+
+    void openLog() {
+        // show debug log information here, this only persists per session
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Debug Log");
+        alert.setHeaderText("Debug info for this session");
+
+        Label label = new Label("Log:");
+
+        String disp = model.getDebugLog().toString();
+        disp = disp.substring(1, disp.length() - 1);
+        disp = disp.replace(",","\n");
+        TextArea textArea = new TextArea(disp);
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+
+        textArea.setMaxWidth(Double.MAX_VALUE);
+        textArea.setMaxHeight(Double.MAX_VALUE);
+        GridPane.setVgrow(textArea, Priority.ALWAYS);
+        GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+        GridPane expContent = new GridPane();
+        expContent.setMaxWidth(Double.MAX_VALUE);
+        expContent.add(label, 0, 0);
+        expContent.add(textArea, 0, 1);
+
+// Set expandable Exception into the dialog pane.
+        alert.getDialogPane().setExpandableContent(expContent);
+        alert.getDialogPane().setExpanded(true);
+
+        alert.showAndWait();
     }
+
+    void addDebugLog(String msg) {
+        model.addToDebug(msg);
+    }
+
+    // Other functions here
 
     boolean saveDefaultDialog(String which) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -518,8 +536,85 @@ public class Controller {
         return false;
     }
 
-    boolean hasDefaultKeywords() {
-        File tmpDir = new File("default.bc");
-        return tmpDir.exists();
+    void showAbout() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("About");
+        alert.setHeaderText(null);
+        alert.setContentText("This is where the about message will go, I guess.");
+
+        alert.showAndWait();
     }
+
 }
+
+
+/*
+how we will make calls:
+
+HTTPS Headers or URL Parameters—Each Finding API call requires certain HTTPS headers or URL parameters.
+For example, you must specify your AppID in the X-EBAY-SOA-SECURITY-APPNAME header or SECURITY-APPNAME URL
+parameter. Similarly, you must always specify the call name in the X-EBAY-SOA-OPERATION-NAME header or
+OPERATION-NAME URL parameter. Other headers are optional or conditionally required. (Is that what including
+our dev id in the call does?)
+
+http://svcs.ebay.com/services/search/FindingService/v1?
+   OPERATION-NAME=findCompletedItems&
+   SERVICE-VERSION=1.7.0&
+   SECURITY-APPNAME=TylerWes-BearClaw-PRD-7bddb6120-21fb4e35&
+   RESPONSE-DATA-FORMAT=XML&
+   REST-PAYLOAD&
+   keywords=OUR KEYWORDS GO HERE!&
+   categoryId=64482&
+   itemFilter(0).name=SoldItemsOnly&
+   itemFilter(0).value=true&
+   sortOrder=PricePlusShippingLowest&
+   paginationInput.entriesPerPage=2
+
+
+
+ */
+
+// app key:
+// TylerWes-BearClaw-PRD-7bddb6120-21fb4e35
+
+// dev id:
+// d35e0ed9-cedb-4720-a258-ab8109363518
+
+// cert id:
+// PRD-bddb612064b3-6428-46f8-b6ca-da45
+
+// fields to check / grab:
+// searchResult.item.sellingStatus.sellingState
+//        EndedWithSales
+//        The listing has been ended with sales.
+
+// searchResult.item.title
+//      name of item as listed
+
+// searchResult.item.location
+//      physical location of the item
+
+// searchResult.item.sellingStatus.convertedCurrentPrice --> return double
+// The listing's current price converted to the currency of the site specified in the find request (globalId).
+
+// categories: Sports Mem, Cards & Fan Shop	-> 64482
+
+//example:
+/*
+http://svcs.ebay.com/services/search/FindingService/v1?
+   OPERATION-NAME=findCompletedItems&
+   SERVICE-VERSION=1.7.0&
+   SECURITY-APPNAME=YourAppID&
+   RESPONSE-DATA-FORMAT=XML&
+   REST-PAYLOAD&
+   keywords=Garmin+nuvi+1300+Automotive+GPS+Receiver&
+   categoryId=156955&
+   itemFilter(0).name=Condition&
+   itemFilter(0).value=3000&
+   itemFilter(1).name=FreeShippingOnly&
+   itemFilter(1).value=true&
+   itemFilter(2).name=SoldItemsOnly&
+   itemFilter(2).value=true&
+   sortOrder=PricePlusShippingLowest&
+   paginationInput.entriesPerPage=2
+ */

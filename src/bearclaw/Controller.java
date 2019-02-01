@@ -2,9 +2,7 @@ package bearclaw;
 
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.DirectoryChooser;
@@ -18,15 +16,14 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import static javafx.collections.FXCollections.observableArrayList;
 
@@ -34,16 +31,19 @@ public class Controller {
 
     ArrayList<String> searchTerms = new ArrayList<>();    // do it this way so we can serialize this
     ObservableList<String> searchTermsObservable = observableArrayList(searchTerms);
-    GUI gui;
-    Model model;
+    private GUI gui;
+    private Model model;
 
     public Controller(Model setModel) {
         this.model = setModel;
         if (hasDefaultKeywords()) {
+            gui.setDebugText("Found default keywords! Loading.");
             loadKeywords();
         }
         if (hasDefaultFolder()) {
+            gui.setDebugText("Found default save folder! Loading.");
             getDefaultFolder();
+            gui.setDebugText("Set default save folder to "+model.getSaveDir().toString());
         }
     }
 
@@ -65,21 +65,25 @@ public class Controller {
             alert.showAndWait();
             return false;
         }
+        gui.setDebugText("Writing to " + model.getSaveDir().toString());
 
-        String EXCEL_FILE_LOCATION = model.getSaveDir().getPath() + "/out.xls";
+        String excelFileName = "/out.xls";
+        String excelFileLocation = model.getSaveDir().getPath() + excelFileName;
+        // todo:
+        // check if this file already exists and confirm overwrite if it does
+        // where do we get file name from? generate?
 
 
         // create excel workbook
         WritableWorkbook excelOutput = null;
 
         try {
-            excelOutput = Workbook.createWorkbook(new File(EXCEL_FILE_LOCATION));
+            excelOutput = Workbook.createWorkbook(new File(excelFileLocation));
         } catch (IOException e){
             e.printStackTrace();
         }
 
         // create excel sheet
-//        WritableSheet outSheet = excelOutput.createSheet("Sheet 1", 0);
         int sheet = 0;
         for (String keyword : searchTermsObservable) {
             gui.setDebugText("generating report for " + keyword +" on sheet "+sheet);
@@ -312,6 +316,10 @@ public class Controller {
         if (desktop != null) dc.setInitialDirectory(desktop);
         File selectedFile = dc.showDialog(gui.getStage());
         model.setSaveDir(selectedFile);
+        if (!hasDefaultFolder()) {
+            boolean doSetDefaultFolder = saveDefaultDialog("save folder");
+            if (doSetDefaultFolder) setDefaultFolder();
+        }
     }
 
     void fileLoad() {
@@ -328,6 +336,17 @@ public class Controller {
     }
 
     void fileSave() {
+        if (!hasDefaultKeywords()) {
+            boolean saveDefault = saveDefaultDialog("keywords");
+            if (saveDefault) saveKeywords();
+            else saveChooser();
+        } else {
+            saveChooser();
+
+        }
+    }
+
+    void saveChooser() {
         // do saving here
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Keywords");
@@ -372,6 +391,7 @@ public class Controller {
 
 // Set expandable Exception into the dialog pane.
         alert.getDialogPane().setExpandableContent(expContent);
+        alert.getDialogPane().setExpanded(true);
 
         alert.showAndWait();
     }
@@ -441,23 +461,65 @@ public class Controller {
     void setDefaultFolder() {
         // save default saving folder here
         // to do: serialize the file that points to our default folder for saving
+        try {
+            FileOutputStream fileOutputStream
+                    = new FileOutputStream("prefs.bc");
+            ObjectOutputStream objectOutputStream
+                    = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(model.getSaveDir());
+            objectOutputStream.flush();
+            objectOutputStream.close();
+        } catch (IOException e) {
+            addDebugLog("Can't write default keywords");
+        }
     }
 
     void getDefaultFolder() {
         // load default saving folder here
         // to do: deserialize the file and set default folder
+        try {
+            FileInputStream fileInputStream
+                    = new FileInputStream("prefs.bc");
+            ObjectInputStream objectInputStream
+                    = new ObjectInputStream(fileInputStream);
+            File setDir = (File) objectInputStream.readObject();
+            model.setSaveDir(setDir);
+            objectInputStream.close();
+        } catch (IOException e) {
+            addDebugLog("Cannot load default keywords");
+        } catch (ClassNotFoundException e) {
+            addDebugLog("Default keywords file corrupt");
+        }
     }
 
     boolean hasDefaultFolder() {
         // check if we have a default folder saved
         File tmpDir = new File("prefs.bc");
-        boolean exists = tmpDir.exists();
-        return exists;
+        return tmpDir.exists();
+    }
+
+    boolean saveDefaultDialog(String which) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Save default");
+        alert.setHeaderText("Looks like you have no "+which+" default yet. Save this as default?");
+        alert.setContentText("Choose wisely");
+
+        ButtonType buttonYes = new ButtonType("Yes");
+        ButtonType buttonNo = new ButtonType("No");
+
+        alert.getButtonTypes().setAll(buttonYes, buttonNo);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == buttonYes){
+            return true;
+        } else if (result.get() == buttonNo) {
+            return false;
+        }
+        return false;
     }
 
     boolean hasDefaultKeywords() {
         File tmpDir = new File("default.bc");
-        boolean exists = tmpDir.exists();
-        return exists;
+        return tmpDir.exists();
     }
 }

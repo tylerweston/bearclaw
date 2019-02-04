@@ -37,4 +37,13 @@ public class CategoryManager {
         return categories;
     }
 
+    public int getID(String s) {
+        // return category ID associated with string, -1 if category DNE
+        // runs worst case theta(n)
+        for (Categories c: categories) {
+            if (s.compareTo(s) == 0) return c.getID();
+        }
+        return -1;
+    }
+
 }

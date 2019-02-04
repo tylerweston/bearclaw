@@ -123,7 +123,8 @@ public class GUI {
             options.add(c.toString());
         }
         final ComboBox idChoice = new ComboBox(options);
-        idChoice.setPromptText("Select category ID");
+        //idChoice.setPromptText("Select category ID");
+        idChoice.getSelectionModel().select("Sports Memorabilia & Cards");
 
         // build bottom buttons
         bottom.getChildren().addAll(genButton, addButton, remButton);

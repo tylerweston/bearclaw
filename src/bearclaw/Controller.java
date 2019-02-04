@@ -69,6 +69,10 @@ public class Controller {
         // lists that are in that folder
     }
 
+    void setDebugText(String s) {
+        gui.setDebugText(s);
+    }
+
     public boolean generateReport() {
         model.addToDebug("Generating report...");
         // first, open our excel sheet
@@ -90,6 +94,9 @@ public class Controller {
         // check if this file already exists and confirm overwrite if it does
         // where do we get file name from? generate?
 
+        // get our category ID here
+        int cat = model.getCurrCategoryID();
+        model.addToDebug("Current category ID # " + cat);
 
         // create excel workbook
         WritableWorkbook excelOutput = null;
@@ -102,11 +109,24 @@ public class Controller {
 
         // create excel sheet
         int sheet = 0;
-        for (String keyword : kwords.getKeywords()) {
+
+        // added might get refactored out!
+        int words =0 ;
+
+        //for (String keyword : kwords.getKeywords()) {
+
+        // mad hacks below bro
+        for (String keyword : gui.searchTermDisplay.getItems()) {
             model.addToDebug("generating report for " + keyword +" on sheet "+sheet);
             // pass the excel sheet to this function
-            generateReportEntry(keyword, excelOutput, sheet);
+            generateReportEntry(keyword, excelOutput, sheet, cat);
             sheet++;
+            words++;
+        }
+
+        if (words == 0) {
+            model.addToDebug("No keywords found!");
+            return false;
         }
         // now, write everything
         model.addToDebug("Writing to report...");
@@ -133,7 +153,7 @@ public class Controller {
         return true;
     }
 
-    public boolean generateReportEntry(String keyword, WritableWorkbook excelOutput, int sheet) {
+    public boolean generateReportEntry(String keyword, WritableWorkbook excelOutput, int sheet, int cat) {
         // this will eventually be replaced with custom searches!
 
         String keywords = keyword.replace(" ", "%20");
@@ -157,7 +177,9 @@ public class Controller {
         https_url_sb.append("keywords=");
         https_url_sb.append(keywords);
         https_url_sb.append("&");
-        https_url_sb.append("categoryId=64482&");
+//        https_url_sb.append("categoryId=64482&");
+        https_url_sb.append("categoryId=" + cat + "&");
+
         https_url_sb.append("itemFilter(0).name=SoldItemsOnly&");
         https_url_sb.append("itemFilter(0).value=true&");
         https_url_sb.append("sortOrder=PricePlusShippingHighest&");
@@ -192,8 +214,6 @@ public class Controller {
                 return false;
             }
 
-            //DocumentBuilderFactory factory =
-            //        DocumentBuilderFactory.newInstance();
             int responseCode;
             try {
                 connection.setRequestMethod("GET");
@@ -232,9 +252,7 @@ public class Controller {
                 doc.getDocumentElement().normalize();   // what does this do/why do we do it?
                 String got_results = rroot.getElementsByTagName("ack").item(0)
                         .getTextContent();  // want this to be Success, otherwise, exit or throw
-                // error message or something smart like that
-//                System.out.println(rroot.getTagName()); // should be findCompleted..something
-//                System.out.println(got_results); // this should be SUCCESS to make sure it is good
+                                            // error message or something smart like that
                 if (got_results.compareTo("Success") != 0) {
                     model.addToDebug("Bad ack from eBay");
                     return false;

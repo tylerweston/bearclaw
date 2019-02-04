@@ -7,6 +7,9 @@ public class Model {
 
     File saveDir = null;
     ArrayList<String> debugLog = new ArrayList<>();
+    ArrayList<String> currentKwords = new ArrayList<>();
+    GUI gui;
+    int currCategoryID = 64482; // default is sports cards & memorabilia
 
     //TODO:
     // -this eventually will hold all of our data, so we need to move the keywords that we
@@ -29,8 +32,29 @@ public class Model {
         catManager = new CategoryManager();
     }
 
+    ArrayList<String> getCurrentKwords(){
+        return currentKwords;
+    }
+
+    void setCurrentKwords(ArrayList<String> cur) {
+        currentKwords = cur;
+    }
+
+    int getCurrCategoryID() {
+        return currCategoryID;
+    }
+
+    void setCurrCategoryID(int n) {
+        currCategoryID = n;
+    }
+
     void addToDebug(String toAdd) {
+        if (gui != null) gui.setDebugText(toAdd);
         debugLog.add(toAdd);
+    }
+
+    void setGui(GUI g) {
+        gui = g;
     }
 
     ArrayList<String> getDebugLog() {

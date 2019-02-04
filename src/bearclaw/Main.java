@@ -6,7 +6,9 @@ package bearclaw;
 
     todo:
 
-    - give jane big kisses
+    - parsing of cards that get returned, separate
+        - DATE (how to get something that looks like a date?)
+        - run of cards (pull from database)
     - loading keywords does NOT work, this needs to
     - detect if keywords has changed since last save, prompt to save if so
     - loading keywords is not acting as expected right now
@@ -28,8 +30,6 @@ package bearclaw;
     - move things to packages?
     - Loading keywords does NOT work yet, fix this
 
-
-
     bugs:
     - menu shows up in the wrong place sometimes (?) only seen once, javafx problem /w ubuntu?
  */
@@ -49,6 +49,7 @@ public class Main extends Application {
         Model model = new Model();
         controller= new Controller(model);
         GUI gui = new GUI(primaryStage, controller);
+        model.setGui(gui);
 
         controller.setGUI(gui);
     }

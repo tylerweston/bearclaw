@@ -27,7 +27,7 @@ public class GUI {
     private final Stage stage;
     private final MainMenu controllerMenu;
     ArrayList<String> sItems;
-    ListView<String> searchTermDisplay = new ListView<String>();
+    ListView<String> searchTermDisplay;
     TextField addTagText;
 
     public GUI(Stage primaryStage, Controller setController) {
@@ -164,6 +164,10 @@ public class GUI {
         controller.addItem(addTagText.getCharacters().toString());
         addTagText.setText("");
         addTagText.requestFocus();
+    }
+
+    void setSearchTermDisplay(ObservableList<String> s) {
+        searchTermDisplay.setItems(s);
     }
 
     void doDelete() {

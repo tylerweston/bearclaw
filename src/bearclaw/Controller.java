@@ -420,9 +420,10 @@ public class Controller {
             ObjectInputStream objectInputStream
                     = new ObjectInputStream(fileInputStream);
 //            ArrayList<String> list = (ArrayList<String>) objectInputStream.readObject();
+
+            kwords = (KeywordList) objectInputStream.readObject();
 //            searchTermsObservable.clear();
 //            searchTermsObservable.addAll(list);
-            kwords = (KeywordList) objectInputStream.readObject();
             objectInputStream.close();
         } catch (IOException e) {
             addDebugLog("Cannot load default keywords");

@@ -9,6 +9,8 @@ package bearclaw;
     - detect if keywords has changed since last save, prompt to save if so
     - loading keywords is not acting as expected right now
     - need to select a default category for category ID?
+    - if we change category ID, write it to KeywordManager
+    - make sure we update category ID when we load a new KeywordManager
 
     - add more options (ie what data to write to file !! )
     - add keyword name to top of each sheet (?)

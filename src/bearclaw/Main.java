@@ -6,6 +6,8 @@ package bearclaw;
 
     todo:
 
+    - give jane big kisses
+    - loading keywords does NOT work, this needs to
     - detect if keywords has changed since last save, prompt to save if so
     - loading keywords is not acting as expected right now
     - need to select a default category for category ID?
@@ -23,6 +25,7 @@ package bearclaw;
     - change report generating to handle different category IDS
     - move things to packages?
     - Loading keywords does NOT work yet, fix this
+
 
 
     bugs:

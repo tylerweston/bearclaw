@@ -29,6 +29,7 @@ public class GUI {
     ArrayList<String> sItems;
     ListView<String> searchTermDisplay;
     TextField addTagText;
+    final ComboBox idChoice;
 
     public GUI(Stage primaryStage, Controller setController) {
         this.controller = setController;
@@ -122,7 +123,8 @@ public class GUI {
         for (Categories c: controller.getModel().getCatMan().getCategories()) {
             options.add(c.toString());
         }
-        final ComboBox idChoice = new ComboBox(options);
+
+        idChoice = new ComboBox(options);
         //idChoice.setPromptText("Select category ID");
         idChoice.getSelectionModel().select("Sports Memorabilia & Cards");
 
@@ -173,9 +175,6 @@ public class GUI {
 
     void doDelete() {
         controller.addDebugLog("Removing tag");
-        // todo:
-        // play around with this still, looks like there could very well
-        // be mistakes in this implementation
 
         if (sItems.size() != 0) {
             controller.removeItems(sItems);
@@ -184,6 +183,10 @@ public class GUI {
             int selectIndex = searchTermDisplay.getSelectionModel().getSelectedIndex();
             if (selectIndex != -1) controller.removeItem(selectIndex);
         }
+    }
+
+    void setComboBox(String s) {
+        idChoice.getSelectionModel().select(s);
     }
 
     Stage getStage() {

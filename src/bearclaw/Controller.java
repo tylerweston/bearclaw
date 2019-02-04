@@ -442,6 +442,9 @@ public class Controller {
             kwords = (KeywordList) objectInputStream.readObject();
 //            searchTermsObservable.clear();
 //            searchTermsObservable.addAll(list);
+            String s = kwords.getMyCategory();
+            gui.setComboBox(s);
+            model.setCurrCategoryID(CategoryManager.getID(s));
             objectInputStream.close();
         } catch (IOException e) {
             addDebugLog("Cannot load default keywords");
@@ -454,7 +457,7 @@ public class Controller {
 
     boolean hasDefaultFolder() {
         // check if we have a default folder saved
-        File tmpDir = new File("prefs.bc");
+        File tmpDir = new File("prefs.bcs");
         return tmpDir.exists();
     }
 
@@ -476,7 +479,7 @@ public class Controller {
         // to do: serialize the file that points to our default folder for saving
         try {
             FileOutputStream fileOutputStream
-                    = new FileOutputStream("prefs.bc");
+                    = new FileOutputStream("prefs.bcs");
             ObjectOutputStream objectOutputStream
                     = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(model.getSaveDir());
@@ -492,7 +495,7 @@ public class Controller {
         // to do: deserialize the file and set default folder
         try {
             FileInputStream fileInputStream
-                    = new FileInputStream("prefs.bc");
+                    = new FileInputStream("prefs.bcs");
             ObjectInputStream objectInputStream
                     = new ObjectInputStream(fileInputStream);
             File setDir = (File) objectInputStream.readObject();

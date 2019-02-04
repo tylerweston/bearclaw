@@ -25,6 +25,10 @@ public class KeywordList implements Serializable {
         this.myCategory = myCategory;
     }
 
+    String getMyCategory() {
+        return myCategory.getCategoryName();
+    }
+
     public ArrayList<String> getKeywords() {
         return keywords;
     }

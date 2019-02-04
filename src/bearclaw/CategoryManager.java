@@ -37,7 +37,7 @@ public class CategoryManager {
         return categories;
     }
 
-    public int getID(String s) {
+    public static int getID(String s) {
         // return category ID associated with string, -1 if category DNE
         // runs worst case theta(n)
         for (Categories c: categories) {

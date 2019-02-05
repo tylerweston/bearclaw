@@ -11,9 +11,9 @@ package bearclaw;
     - parsing of cards that get returned, separate
         - DATE (how to get something that looks like a date?)
         - run of cards (pull from database)
-    - loading keywords does NOT work, this needs to
+    - loading keywords does NOT work, this needs to be fixed!
+    - right now its just list spaghetti, got to optimize and pretty it up
     - detect if keywords has changed since last save, prompt to save if so
-    - loading keywords is not acting as expected right now
     - need to select a default category for category ID?
     - if we change category ID, write it to KeywordManager
     - make sure we update category ID when we load a new KeywordManager
@@ -21,7 +21,6 @@ package bearclaw;
     - add more options (ie what data to write to file !! )
     - add keyword name to top of each sheet (?)
     - allow different category IDs (!)
-    - don't generate repots if keywords are empty
     - cleaup GUI, move to XML with controllers and whatnot? how does that even work?
     - debug log window is buggy LUL
     - include saving the category ID with list so that you can have different lists
@@ -30,7 +29,6 @@ package bearclaw;
           list and the category that is attached to the list
     - change report generating to handle different category IDS
     - move things to packages?
-    - Loading keywords does NOT work yet, fix this
 
     bugs:
     - menu shows up in the wrong place sometimes (?) only seen once, javafx problem /w ubuntu?

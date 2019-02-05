@@ -112,8 +112,8 @@ public class Controller {
         int words = 0;
 
         // hello, this is hack, please delete later::
-        for (String keyword : gui.searchTermDisplay.getItems()) {
-//        for (String keyword : kwords.getKeywords()) {
+//        for (String keyword : gui.searchTermDisplay.getItems()) {
+        for (String keyword : kwords.getKeywords()) {
 
             model.addToDebug("generating report for " + keyword +" on sheet "+sheet);
             // pass the excel sheet to this function
@@ -445,6 +445,7 @@ public class Controller {
             objectInputStream.close();
         } catch (IOException e) {
             addDebugLog("Cannot load default keywords");
+            addDebugLog(e.getMessage());
         } catch (ClassNotFoundException e) {
             addDebugLog("Default keywords file corrupt");
         }

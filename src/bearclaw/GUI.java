@@ -64,7 +64,8 @@ public class GUI {
         javafx.scene.control.Label st = new javafx.scene.control.Label("Search Terms");
 //        searchTermDisplay = new ListView<String>();
 
-        keywordChoice = FXCollections.<String>observableArrayList(controller.getKwords().getKeywords());
+        //keywordChoice = FXCollections.<String>observableArrayList(controller.getKwords().getKeywords());
+        ObservableList<String> keywordChoice = FXCollections.observableArrayList(controller.getKwords().getKeywords());
         searchTermDisplay = new ListView<String>(keywordChoice);
 
         searchTermDisplay.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -159,8 +160,8 @@ public class GUI {
         root.add(bottom, 1, 4);
         root.add(idChoice, 1, 5);
         root.add(debug, 1, 6);
-        searchTermDisplay.setItems(controller.getKwords().getKeywords());
-
+//        searchTermDisplay.setItems(controller.getKwords().getKeywords());
+        searchTermDisplay.getItems().addAll(controller.getKwords().getKeywords());
         // build main menu
         controllerMenu = new MainMenu(controller);
         controllerMenu.prefWidthProperty().bind(scene.widthProperty());

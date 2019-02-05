@@ -11,7 +11,7 @@ import static javafx.collections.FXCollections.observableArrayList;
 
 public class KeywordList implements Serializable {
     // This is collecting keywords properly, just needs to be updated somewhere now
-    ObservableList<String> keywords = FXCollections.observableArrayList();
+    ArrayList<String> keywords = new ArrayList<>();
 
     // currently in controller uses:
     // ObservableList<String> keywordsObservable = observableArrayList(keywords);
@@ -30,14 +30,14 @@ public class KeywordList implements Serializable {
     }
 
 
-    ObservableList<String> getKeywords() {
+    ArrayList<String> getKeywords() {
         return keywords;
     }
 
     public void addKeyword(String kword) {
-//        System.out.println("adding a keyword in KeywordList!");
+        System.out.println("adding a keyword in KeywordList!");
         keywords.add(kword);
-//        System.out.print(keywords);
+        System.out.print(keywords);
     }
 
     public void removeKeyword(String kword) {

@@ -146,7 +146,6 @@ public class GUI {
         GridPane.setMargin(idChoice, defIn);
         GridPane.setHalignment(idChoice, HPos.CENTER);
         GridPane.setMargin(debug, defIn);
-
         //ObservableList<String> keywordChoice = new ObservableList<String>();
 //        ListView<String> lview = FXCollections.<String>(controller.getKwords().getKeywords());
 //        searchTermDisplay = FXCollections.observableList(controller.getKwords().getKeywords());
@@ -160,7 +159,7 @@ public class GUI {
         root.add(bottom, 1, 4);
         root.add(idChoice, 1, 5);
         root.add(debug, 1, 6);
-        //searchTermDisplay.setItems(controller.getKwords().getKeywords());
+        searchTermDisplay.setItems(controller.getKwords().getKeywords());
 
         // build main menu
         controllerMenu = new MainMenu(controller);

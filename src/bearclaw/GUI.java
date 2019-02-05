@@ -29,6 +29,7 @@ public class GUI {
     ArrayList<String> sItems;
     ListView<String> searchTermDisplay;
     TextField addTagText;
+    ObservableList<String> keywordChoice;
     final ComboBox idChoice;
 
     public GUI(Stage primaryStage, Controller setController) {
@@ -61,7 +62,11 @@ public class GUI {
         Button remButton = new Button("Remove Term");
 
         javafx.scene.control.Label st = new javafx.scene.control.Label("Search Terms");
-        searchTermDisplay = new ListView<String>();
+//        searchTermDisplay = new ListView<String>();
+
+        keywordChoice = FXCollections.<String>observableArrayList(controller.getKwords().getKeywords());
+        searchTermDisplay = new ListView<String>(keywordChoice);
+
         searchTermDisplay.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         searchTermDisplay.getSelectionModel().selectedItemProperty()
                 .addListener((c, oldSelect, newSelect) ->
@@ -90,6 +95,7 @@ public class GUI {
         // add tags by pressing enter
         addTagText.setOnKeyPressed((ke) -> {
             if (ke.getCode() == KeyCode.ENTER) {
+                controller.addDebugLog("Adding keyword!");
                 addKeyword();
             }
         });
@@ -141,6 +147,12 @@ public class GUI {
         GridPane.setHalignment(idChoice, HPos.CENTER);
         GridPane.setMargin(debug, defIn);
 
+        //ObservableList<String> keywordChoice = new ObservableList<String>();
+//        ListView<String> lview = FXCollections.<String>(controller.getKwords().getKeywords());
+//        searchTermDisplay = FXCollections.observableList(controller.getKwords().getKeywords());
+//        keywordChoice = FXCollections.<String>observableArrayList(controller.getKwords().getKeywords());
+//        searchTermDisplay = new ListView<>(keywordChoice);
+
         // add everything to our gridpane
         root.add(st,1,1);
         root.add(searchTermDisplay, 1, 2);
@@ -148,7 +160,7 @@ public class GUI {
         root.add(bottom, 1, 4);
         root.add(idChoice, 1, 5);
         root.add(debug, 1, 6);
-        searchTermDisplay.setItems(controller.getKwords().getKeywordsObservable());
+        //searchTermDisplay.setItems(controller.getKwords().getKeywords());
 
         // build main menu
         controllerMenu = new MainMenu(controller);
@@ -165,6 +177,7 @@ public class GUI {
 
     void addKeyword() {
         controller.addItem(addTagText.getCharacters().toString());
+        controller.addDebugLog("Adding keyword " + addTagText.getCharacters().toString());
         addTagText.setText("");
         addTagText.requestFocus();
     }

@@ -80,9 +80,17 @@ class MainMenu extends MenuBar {
         toolsMenu.getItems().add(toolsBatchGenerate);
         toolsMenu.getItems().add(toolsSetDefaultKeywords);
         toolsMenu.getItems().add(toolsSetDefaultFolder);
-        toolsMenu.getItems().add(new SeparatorMenuItem());
-        toolsMenu.getItems().add(toolsDebugLog);
+//        toolsMenu.getItems().add(new SeparatorMenuItem());
 
+        // Debug menu
+
+        final Menu debugMenu = new Menu("Debug");
+
+        MenuItem debugDumpKwords = new MenuItem("Dump KWords");
+        debugDumpKwords.setOnAction((ae) -> controller.dumpKwords());
+
+        debugMenu.getItems().add(toolsDebugLog);
+        debugMenu.getItems().add(debugDumpKwords);
 
 
         // about menu
@@ -92,7 +100,7 @@ class MainMenu extends MenuBar {
         aboutItem.setOnAction((ae) -> controller.showAbout());
         aboutMenu.getItems().add(aboutItem);
 
-        this.getMenus().addAll(fileMenu , toolsMenu, aboutMenu);    // add tools back in if needed
+        this.getMenus().addAll(fileMenu , toolsMenu, debugMenu, aboutMenu);    // add tools back in if needed
     }
 
     /**

@@ -1,5 +1,6 @@
 package bearclaw;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.Serializable;
@@ -9,12 +10,11 @@ import static javafx.collections.FXCollections.observableArrayList;
 
 
 public class KeywordList implements Serializable {
-    ArrayList<String> keywords = new ArrayList<>();
-    // or use ObservableList<T> observableList = FXCollections.observableArrayList(); ??
+    // This is collecting keywords properly, just needs to be updated somewhere now
+    ObservableList<String> keywords = FXCollections.observableArrayList();
 
     // currently in controller uses:
-    // ArrayList<String> searchTerms = new ArrayList<>();    // do it this way so we can serialize this
-     ObservableList<String> keywordsObservable = observableArrayList(keywords);
+    // ObservableList<String> keywordsObservable = observableArrayList(keywords);
     Categories myCategory;
 
     public KeywordList() {
@@ -29,28 +29,27 @@ public class KeywordList implements Serializable {
         return myCategory.getCategoryName();
     }
 
-    public ArrayList<String> getKeywords() {
+
+    ObservableList<String> getKeywords() {
         return keywords;
     }
 
-    ObservableList<String> getKeywordsObservable() {
-        return keywordsObservable;
-    }
-
     public void addKeyword(String kword) {
-        keywordsObservable.add(kword);
+//        System.out.println("adding a keyword in KeywordList!");
+        keywords.add(kword);
+//        System.out.print(keywords);
     }
 
     public void removeKeyword(String kword) {
-        keywordsObservable.remove(kword);
+        keywords.remove(kword);
     }
 
     public void removeKeyword(int index) {
-        keywordsObservable.remove(index);
+        keywords.remove(index);
     }
 
     public void removeKeywords(ArrayList<String> kwords) {
-        keywordsObservable.removeAll(kwords);
+        keywords.removeAll(kwords);
     }
 
 }

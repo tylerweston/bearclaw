@@ -54,6 +54,13 @@ public class Controller {
         this.gui = gui;
     }
 
+    void dumpKwords() {
+        model.addToDebug("Dumping keywords");
+        for (String s: model.getCurrentKwords()) {
+            model.addToDebug(s);
+        }
+    }
+
     void doExit() {
         // to do here:
         // clean up and save any data, etc as necessary
@@ -67,10 +74,6 @@ public class Controller {
         // todo:
         // crawl through the current save directory and generate reports for ALL keywords
         // lists that are in that folder
-    }
-
-    void setDebugText(String s) {
-        gui.setDebugText(s);
     }
 
     public boolean generateReport() {
@@ -94,9 +97,6 @@ public class Controller {
         // check if this file already exists and confirm overwrite if it does
         // where do we get file name from? generate?
 
-        // get our category ID here
-        int cat = model.getCurrCategoryID();
-        model.addToDebug("Current category ID # " + cat);
 
         // create excel workbook
         WritableWorkbook excelOutput = null;
@@ -109,26 +109,23 @@ public class Controller {
 
         // create excel sheet
         int sheet = 0;
+        int words = 0;
 
-        // added might get refactored out!
-        int words =0 ;
-
-        //for (String keyword : kwords.getKeywords()) {
-
-        // mad hacks below bro
+        // hello, this is hack, please delete later::
         for (String keyword : gui.searchTermDisplay.getItems()) {
+//        for (String keyword : kwords.getKeywords()) {
+
             model.addToDebug("generating report for " + keyword +" on sheet "+sheet);
             // pass the excel sheet to this function
-            generateReportEntry(keyword, excelOutput, sheet, cat);
+            generateReportEntry(keyword, excelOutput, sheet);
             sheet++;
             words++;
         }
-
         if (words == 0) {
-            model.addToDebug("No keywords found!");
+            model.addToDebug("No keywords found, aborting repott");
             return false;
         }
-        // now, write everything
+         // now, write everything
         model.addToDebug("Writing to report...");
         try {
             excelOutput.write();
@@ -153,7 +150,7 @@ public class Controller {
         return true;
     }
 
-    public boolean generateReportEntry(String keyword, WritableWorkbook excelOutput, int sheet, int cat) {
+    public boolean generateReportEntry(String keyword, WritableWorkbook excelOutput, int sheet) {
         // this will eventually be replaced with custom searches!
 
         String keywords = keyword.replace(" ", "%20");
@@ -177,9 +174,7 @@ public class Controller {
         https_url_sb.append("keywords=");
         https_url_sb.append(keywords);
         https_url_sb.append("&");
-//        https_url_sb.append("categoryId=64482&");
-        https_url_sb.append("categoryId=" + cat + "&");
-
+        https_url_sb.append("categoryId=64482&");
         https_url_sb.append("itemFilter(0).name=SoldItemsOnly&");
         https_url_sb.append("itemFilter(0).value=true&");
         https_url_sb.append("sortOrder=PricePlusShippingHighest&");
@@ -214,6 +209,8 @@ public class Controller {
                 return false;
             }
 
+            //DocumentBuilderFactory factory =
+            //        DocumentBuilderFactory.newInstance();
             int responseCode;
             try {
                 connection.setRequestMethod("GET");
@@ -252,7 +249,9 @@ public class Controller {
                 doc.getDocumentElement().normalize();   // what does this do/why do we do it?
                 String got_results = rroot.getElementsByTagName("ack").item(0)
                         .getTextContent();  // want this to be Success, otherwise, exit or throw
-                                            // error message or something smart like that
+                // error message or something smart like that
+//                System.out.println(rroot.getTagName()); // should be findCompleted..something
+//                System.out.println(got_results); // this should be SUCCESS to make sure it is good
                 if (got_results.compareTo("Success") != 0) {
                     model.addToDebug("Bad ack from eBay");
                     return false;
@@ -337,6 +336,7 @@ public class Controller {
         toAdd = toAdd.trim();
         if ("".compareTo(toAdd) != 0 && "Add tags here...".compareTo(toAdd) != 0) {
             if (!kwords.getKeywords().contains(toAdd)) {
+                this.addDebugLog("calling kword to add keyword");
                 kwords.addKeyword(toAdd);
                 return true;
             }
@@ -442,9 +442,6 @@ public class Controller {
             kwords = (KeywordList) objectInputStream.readObject();
 //            searchTermsObservable.clear();
 //            searchTermsObservable.addAll(list);
-            String s = kwords.getMyCategory();
-            gui.setComboBox(s);
-            model.setCurrCategoryID(CategoryManager.getID(s));
             objectInputStream.close();
         } catch (IOException e) {
             addDebugLog("Cannot load default keywords");
@@ -457,7 +454,7 @@ public class Controller {
 
     boolean hasDefaultFolder() {
         // check if we have a default folder saved
-        File tmpDir = new File("prefs.bcs");
+        File tmpDir = new File("prefs.bc");
         return tmpDir.exists();
     }
 
@@ -479,7 +476,7 @@ public class Controller {
         // to do: serialize the file that points to our default folder for saving
         try {
             FileOutputStream fileOutputStream
-                    = new FileOutputStream("prefs.bcs");
+                    = new FileOutputStream("prefs.bc");
             ObjectOutputStream objectOutputStream
                     = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(model.getSaveDir());
@@ -495,7 +492,7 @@ public class Controller {
         // to do: deserialize the file and set default folder
         try {
             FileInputStream fileInputStream
-                    = new FileInputStream("prefs.bcs");
+                    = new FileInputStream("prefs.bc");
             ObjectInputStream objectInputStream
                     = new ObjectInputStream(fileInputStream);
             File setDir = (File) objectInputStream.readObject();

@@ -6,6 +6,8 @@ package bearclaw;
 
     todo:
 
+    - is there any way to generate a useful graph from this
+        data?
     - parsing of cards that get returned, separate
         - DATE (how to get something that looks like a date?)
         - run of cards (pull from database)
@@ -49,7 +51,6 @@ public class Main extends Application {
         Model model = new Model();
         controller= new Controller(model);
         GUI gui = new GUI(primaryStage, controller);
-        model.setGui(gui);
 
         controller.setGUI(gui);
     }

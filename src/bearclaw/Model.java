@@ -4,8 +4,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.File;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Model {
 
@@ -42,12 +45,21 @@ public class Model {
         // find out if we have a default keyword list, and if yes, save it
         // restore the directory we decided to save our excel output to
         catManager = new CategoryManager();
-        hockeySets = new ArrayList<String>(
-                Arrays.asList(  "UD",
-                                "Upper Deck",
-                                "SP"
-                )
-        );
+        // todo:
+        // move this desired keywords list to a TXT file that we can edit
+
+        hockeySets = new ArrayList<String>();
+        File subsetFile= new File("subsets.txt");
+        addToDebug("Grabbing subsets list");
+        try {
+            List<String> line = Files.readAllLines(subsetFile.toPath(), Charset.forName("UTF-8"));
+            hockeySets.addAll(line.subList(0, line.size()));
+            System.out.println(hockeySets);
+            addToDebug("Succesfully found subsets list");
+        }catch (Exception e) {
+            addToDebug("Subsets list not found");
+            e.printStackTrace();
+        }
     }
 
     ArrayList<String> getHockeySets() {

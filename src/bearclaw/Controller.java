@@ -398,7 +398,7 @@ public class Controller {
         // -compare to dictionary of known card names I suppose?
         StringBuilder toReturn = new StringBuilder("");
         for (String c : model.getHockeySets()) {
-            if (card.contains(c)) {
+            if (card.toLowerCase().contains(c.toLowerCase())) {
                 toReturn.append(c);
                 toReturn.append(" ");
             }

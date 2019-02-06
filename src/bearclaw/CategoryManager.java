@@ -1,6 +1,7 @@
 package bearclaw;
 
 import java.util.ArrayList;
+
 /*
             Collectibles	                    1
             Antiques	                        20081
@@ -37,11 +38,18 @@ public class CategoryManager {
         return categories;
     }
 
+    public static String getString(int n) {
+        for (Categories c: categories) {
+            if (c.getID() == n) return c.getCategoryName();
+        }
+        return "None";
+    }
+
     public static int getID(String s) {
         // return category ID associated with string, -1 if category DNE
         // runs worst case theta(n)
         for (Categories c: categories) {
-            if (s.compareTo(s) == 0) return c.getID();
+            if (s.compareTo(c.toString()) == 0) return c.getID();
         }
         return -1;
     }

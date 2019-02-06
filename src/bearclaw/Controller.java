@@ -29,9 +29,6 @@ import static javafx.collections.FXCollections.observableArrayList;
 
 public class Controller {
 
-//    ArrayList<String> searchTerms = new ArrayList<>();    // do it this way so we can serialize this
-//    ObservableList<String> searchTermsObservable = observableArrayList(searchTerms);
-    KeywordList kwords = new KeywordList();
     private GUI gui;
     private Model model;
 
@@ -52,6 +49,10 @@ public class Controller {
 
     public void setGUI(GUI gui) {
         this.gui = gui;
+    }
+
+    ArrayList<String> getKwords() {
+        return model.getCurrentKwords();
     }
 
     void dumpKwords() {
@@ -75,6 +76,8 @@ public class Controller {
         // crawl through the current save directory and generate reports for ALL keywords
         // lists that are in that folder
     }
+
+
 
     public boolean generateReport() {
         model.addToDebug("Generating report...");
@@ -112,9 +115,8 @@ public class Controller {
         int words = 0;
 
         // hello, this is hack, please delete later::
-//        for (String keyword : gui.searchTermDisplay.getItems()) {
-        for (String keyword : kwords.getKeywords()) {
-
+        for (String keyword : model.getObservableKWords()) {
+            // this is good, model.getCurrentKwords does indeed contain loaded keywords
             model.addToDebug("generating report for " + keyword +" on sheet "+sheet);
             // pass the excel sheet to this function
             generateReportEntry(keyword, excelOutput, sheet);
@@ -328,16 +330,12 @@ public class Controller {
 
     // Keyword management functions here
 
-    KeywordList getKwords() {
-        return kwords;
-    }
-
     public boolean addItem(String toAdd) {
         toAdd = toAdd.trim();
         if ("".compareTo(toAdd) != 0 && "Add tags here...".compareTo(toAdd) != 0) {
-            if (!kwords.getKeywords().contains(toAdd)) {
+            if (!model.getCurrentKwords().contains(toAdd)) {
                 this.addDebugLog("calling kword to add keyword");
-                kwords.addKeyword(toAdd);
+                model.addKeyword(toAdd);
                 return true;
             }
             model.addToDebug("Attempting to add duplicate key words");
@@ -346,12 +344,12 @@ public class Controller {
     }
 
     public boolean removeItem(int toRemove){
-        kwords.removeKeyword(toRemove);
+        model.removeKeyword(toRemove);
         return true;
     }
 
     public boolean removeItems(ArrayList<String> toRemove){
-        kwords.removeKeywords(toRemove);
+        model.removeKeywords(toRemove);
         return true;
     }
 
@@ -416,6 +414,11 @@ public class Controller {
                     = new FileOutputStream(fileName);
             ObjectOutputStream objectOutputStream
                     = new ObjectOutputStream(fileOutputStream);
+            KeywordList kwords = new KeywordList();
+            kwords.keywords.addAll(model.getObservableKWords());
+
+            // make sure to set category here first
+            kwords.setMyCategory(model.getCurrCategoryID());
             objectOutputStream.writeObject(kwords);
             objectOutputStream.flush();
             objectOutputStream.close();
@@ -437,15 +440,17 @@ public class Controller {
                     = new FileInputStream(fileName);
             ObjectInputStream objectInputStream
                     = new ObjectInputStream(fileInputStream);
-//            ArrayList<String> list = (ArrayList<String>) objectInputStream.readObject();
 
-            kwords = (KeywordList) objectInputStream.readObject();
-//            searchTermsObservable.clear();
-//            searchTermsObservable.addAll(list);
+                // todo: fix this
+            KeywordList kwords = (KeywordList) objectInputStream.readObject();
+            model.setCurrentKwords(kwords.getKeywords());
+            model.setCurrCategoryID(kwords.getMyCategory());
+            System.out.println(CategoryManager.getString(kwords.getMyCategory()));
+            if (gui!= null) gui.setComboBox(CategoryManager.getString(kwords.getMyCategory()).trim());
             objectInputStream.close();
         } catch (IOException e) {
             addDebugLog("Cannot load default keywords");
-            addDebugLog(e.getMessage());
+//            addDebugLog(e.getMessage());
         } catch (ClassNotFoundException e) {
             addDebugLog("Default keywords file corrupt");
         }
@@ -455,7 +460,7 @@ public class Controller {
 
     boolean hasDefaultFolder() {
         // check if we have a default folder saved
-        File tmpDir = new File("prefs.bc");
+        File tmpDir = new File(model.getPrefsFile());
         return tmpDir.exists();
     }
 
@@ -477,7 +482,7 @@ public class Controller {
         // to do: serialize the file that points to our default folder for saving
         try {
             FileOutputStream fileOutputStream
-                    = new FileOutputStream("prefs.bc");
+                    = new FileOutputStream(model.getPrefsFile());
             ObjectOutputStream objectOutputStream
                     = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(model.getSaveDir());
@@ -493,7 +498,7 @@ public class Controller {
         // to do: deserialize the file and set default folder
         try {
             FileInputStream fileInputStream
-                    = new FileInputStream("prefs.bc");
+                    = new FileInputStream(model.getPrefsFile());
             ObjectInputStream objectInputStream
                     = new ObjectInputStream(fileInputStream);
             File setDir = (File) objectInputStream.readObject();
@@ -573,6 +578,10 @@ public class Controller {
         alert.setContentText("This is where the about message will go, I guess.");
 
         alert.showAndWait();
+    }
+
+    void setCategory(String s){
+        model.setCurrCategoryID(CategoryManager.getID(s));
     }
 
 }

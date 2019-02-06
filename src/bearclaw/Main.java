@@ -6,6 +6,8 @@ package bearclaw;
 
     todo:
 
+    - need a frontend OBSERVABLE list that is linked to BACKEND KeywordList
+    - All access and modifcation goes through FRONTEND that is viewed by BACKEND
     - is there any way to generate a useful graph from this
         data?
     - parsing of cards that get returned, separate

@@ -1,5 +1,7 @@
 package bearclaw;
 
+import java.io.Serializable;
+
 public class Categories {
 
     private String categoryName;

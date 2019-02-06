@@ -1,15 +1,24 @@
 package bearclaw;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.io.File;
 import java.util.ArrayList;
 
 public class Model {
 
     File saveDir = null;
-    ArrayList<String> debugLog = new ArrayList<>();
-    ArrayList<String> currentKwords = new ArrayList<>();
+
+    ArrayList<String> debugLog = new ArrayList<>();         // holds our debug messages
+
+    ArrayList<String> currentKwords = new ArrayList<>();    // holds our current keywords
+    ObservableList<String> observableKWords = FXCollections.observableArrayList(currentKwords);
+                                                            // kwords observable
+
     GUI gui;
     int currCategoryID = 64482; // default is sports cards & memorabilia
+    final String prefsFile = "prefs.bcs";
 
     //TODO:
     // -this eventually will hold all of our data, so we need to move the keywords that we
@@ -32,13 +41,26 @@ public class Model {
         catManager = new CategoryManager();
     }
 
+    ObservableList<String> getObservableKWords() {
+        return observableKWords;
+    }
+
+    String getPrefsFile() {
+        return prefsFile;
+    }
+
     ArrayList<String> getCurrentKwords(){
         return currentKwords;
     }
 
     void setCurrentKwords(ArrayList<String> cur) {
         currentKwords = cur;
+        observableKWords.setAll(cur);
     }
+
+//    Categories getCurrCategory() {
+//
+//    }
 
     int getCurrCategoryID() {
         return currCategoryID;
@@ -71,5 +93,23 @@ public class Model {
 
     CategoryManager getCatMan() {
         return catManager;
+    }
+
+    public void addKeyword(String kword) {
+        System.out.println("adding a keyword in KeywordList!");
+        observableKWords.add(kword);
+        System.out.print(observableKWords);
+    }
+
+    public void removeKeyword(String kword) {
+        observableKWords.remove(kword);
+    }
+
+    public void removeKeyword(int index) {
+        observableKWords.remove(index);
+    }
+
+    public void removeKeywords(ArrayList<String> kwords) {
+        observableKWords.removeAll(kwords);
     }
 }

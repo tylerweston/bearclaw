@@ -21,16 +21,19 @@ import javafx.stage.WindowEvent;
 import java.util.ArrayList;
 
 public class GUI {
+
     static Text debug = new Text();
 
     private final Controller controller;
     private final Stage stage;
+
     private final MainMenu controllerMenu;
     ArrayList<String> sItems;
-    ListView<String> searchTermDisplay;
     TextField addTagText;
-    ObservableList<String> keywordChoice;
     final ComboBox idChoice;
+
+    ListView<String> searchTermDisplay;
+
 
     public GUI(Stage primaryStage, Controller setController) {
         this.controller = setController;
@@ -62,11 +65,9 @@ public class GUI {
         Button remButton = new Button("Remove Term");
 
         javafx.scene.control.Label st = new javafx.scene.control.Label("Search Terms");
-//        searchTermDisplay = new ListView<String>();
 
-        //keywordChoice = FXCollections.<String>observableArrayList(controller.getKwords().getKeywords());
-        ObservableList<String> keywordChoice = FXCollections.observableArrayList(controller.getKwords().getKeywords());
-        searchTermDisplay = new ListView<String>(keywordChoice);
+        searchTermDisplay = new ListView<String>();
+        searchTermDisplay.setItems(controller.getModel().getObservableKWords());
 
         searchTermDisplay.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         searchTermDisplay.getSelectionModel().selectedItemProperty()
@@ -132,8 +133,14 @@ public class GUI {
         }
 
         idChoice = new ComboBox(options);
-        //idChoice.setPromptText("Select category ID");
         idChoice.getSelectionModel().select("Sports Memorabilia & Cards");
+        idChoice.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                setDebugText(idChoice.getSelectionModel().getSelectedItem().toString());
+                controller.setCategory(idChoice.getSelectionModel().getSelectedItem().toString());
+            }
+        });
 
         // build bottom buttons
         bottom.getChildren().addAll(genButton, addButton, remButton);
@@ -147,11 +154,6 @@ public class GUI {
         GridPane.setMargin(idChoice, defIn);
         GridPane.setHalignment(idChoice, HPos.CENTER);
         GridPane.setMargin(debug, defIn);
-        //ObservableList<String> keywordChoice = new ObservableList<String>();
-//        ListView<String> lview = FXCollections.<String>(controller.getKwords().getKeywords());
-//        searchTermDisplay = FXCollections.observableList(controller.getKwords().getKeywords());
-//        keywordChoice = FXCollections.<String>observableArrayList(controller.getKwords().getKeywords());
-//        searchTermDisplay = new ListView<>(keywordChoice);
 
         // add everything to our gridpane
         root.add(st,1,1);
@@ -160,8 +162,8 @@ public class GUI {
         root.add(bottom, 1, 4);
         root.add(idChoice, 1, 5);
         root.add(debug, 1, 6);
-//        searchTermDisplay.setItems(controller.getKwords().getKeywords());
-        searchTermDisplay.getItems().addAll(controller.getKwords().getKeywords());
+
+
         // build main menu
         controllerMenu = new MainMenu(controller);
         controllerMenu.prefWidthProperty().bind(scene.widthProperty());

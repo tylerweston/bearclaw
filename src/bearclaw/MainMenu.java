@@ -61,6 +61,9 @@ class MainMenu extends MenuBar {
         toolsBatchGenerate.setOnAction((ae) -> controller.batchGenerate());
         //toolsBatchGenerate.disableProperty().bind(setDisabled);
 
+        MenuItem toolsEditSubsets = new MenuItem("_Edit Subsets");
+        toolsEditSubsets.setAccelerator(new KeyCodeCombination(KeyCode.E, KeyCombination.SHORTCUT_DOWN));
+        toolsEditSubsets.setOnAction((ae) -> controller.doEdit());
 
         MenuItem toolsDebugLog = new MenuItem("_Log");
         toolsDebugLog.setAccelerator(new KeyCodeCombination(KeyCode.L, KeyCombination.SHORTCUT_DOWN));
@@ -78,6 +81,7 @@ class MainMenu extends MenuBar {
 
 
         toolsMenu.getItems().add(toolsBatchGenerate);
+        toolsMenu.getItems().add(toolsEditSubsets);
         toolsMenu.getItems().add(toolsSetDefaultKeywords);
         toolsMenu.getItems().add(toolsSetDefaultFolder);
 //        toolsMenu.getItems().add(new SeparatorMenuItem());

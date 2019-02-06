@@ -19,6 +19,8 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GUI {
 
@@ -26,6 +28,7 @@ public class GUI {
 
     private final Controller controller;
     private final Stage stage;
+    final Timer timer = new Timer(true);
 
     private final MainMenu controllerMenu;
     ArrayList<String> sItems;
@@ -49,6 +52,17 @@ public class GUI {
                 controller.doExit();
             }
         });
+
+        TimerTask task = new TimerTask()
+        {
+            public void run()
+            {
+                setDebugText("");
+            }
+
+        };
+        timer.schedule(task, 5000l,5000l);
+        // automatically clear debug text every now and then
 
         GridPane root = new GridPane();
         root.setAlignment(Pos.CENTER);
@@ -207,4 +221,11 @@ public class GUI {
     Stage getStage() {
         return stage;
     }
+
+
+
+
+
+
+
 }

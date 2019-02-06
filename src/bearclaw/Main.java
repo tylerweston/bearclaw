@@ -6,29 +6,24 @@ package bearclaw;
 
     todo:
 
+    - detect if keywords has changed since last save, prompt to save if so
+    - batch processing - set a default batch processing folder
+
+
+    - simple built in text editor for subset list
+        - save subset text
+        - fix up editor gui
+
     - testing, testing, testing
     - can this handle weird characters?
     - is capitalization important?
-    - batch processing - set a default batch processing folder
-    - write filename should be name of loaded list + date + .bc
     - should prefs.bcs have a separate file for default writing XL and default batch processing?
     - is there any way to generate a useful graph from this
         data (???)
-    - parsing of cards that get returned, separate
-        - DATE (how to get something that looks like a date?)
-        - run of cards (pull from database)
-    - right now its just list spaghetti, got to optimize and pretty it up
-    - detect if keywords has changed since last save, prompt to save if so
 
     - add more options (ie what data to write to file !! )
-    - allow different category IDs (!)
     - cleaup GUI, move to XML with controllers and whatnot? how does that even work?
-    - debug log window is buggy LUL
-    - change report generating to handle different category IDS
-    - move things to packages?
 
-    bugs:
-    - menu shows up in the wrong place sometimes (?) only seen once, javafx problem /w ubuntu?
  */
 
 
@@ -47,6 +42,7 @@ public class Main extends Application {
         controller= new Controller(model);
         GUI gui = new GUI(primaryStage, controller);
 
+        model.setGui(gui);
         controller.setGUI(gui);
         controller.loadDefaults();
     }

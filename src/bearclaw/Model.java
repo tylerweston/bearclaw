@@ -49,12 +49,15 @@ public class Model {
         // move this desired keywords list to a TXT file that we can edit
 
         hockeySets = new ArrayList<String>();
+        loadHockeySets();
+    }
+
+    void loadHockeySets() {
         File subsetFile= new File("subsets.txt");
         addToDebug("Grabbing subsets list");
         try {
             List<String> line = Files.readAllLines(subsetFile.toPath(), Charset.forName("UTF-8"));
             hockeySets.addAll(line.subList(0, line.size()));
-            System.out.println(hockeySets);
             addToDebug("Succesfully found subsets list");
         }catch (Exception e) {
             addToDebug("Subsets list not found");

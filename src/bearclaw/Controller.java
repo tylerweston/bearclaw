@@ -28,16 +28,20 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Controller {
 
     private GUI gui;
     private Model model;
+    private SimpleEditor editor;
 
     // Main Controller functions here
 
     public Controller(Model setModel) {
         this.model = setModel;
+        editor = new SimpleEditor();
     }
 
     public void loadDefaults() {
@@ -50,6 +54,7 @@ public class Controller {
             getDefaultFolder();
             model.addToDebug("Set default save folder to "+model.getSaveDir().toString());
         }
+        model.addToDebug("Done setting defaults...");
     }
 
     public void setGUI(GUI gui) {
@@ -210,7 +215,9 @@ public class Controller {
         https_url_sb.append(keywords);
         https_url_sb.append("&");
         // we want to get category ID here from somewhere else!
-        https_url_sb.append("categoryId=64482&");
+        https_url_sb.append("categoryId=");
+        https_url_sb.append(model.currCategoryID);
+        https_url_sb.append("&");
         https_url_sb.append("itemFilter(0).name=SoldItemsOnly&");
         https_url_sb.append("itemFilter(0).value=true&");
         https_url_sb.append("sortOrder=PricePlusShippingHighest&");
@@ -393,9 +400,6 @@ public class Controller {
     }
 
     String parseName(String card) {
-        // todo:
-        // -pull card set names here and return them
-        // -compare to dictionary of known card names I suppose?
         StringBuilder toReturn = new StringBuilder("");
         for (String c : model.getHockeySets()) {
             if (card.toLowerCase().contains(c.toLowerCase())) {
@@ -407,12 +411,22 @@ public class Controller {
         // return null;
     }
 
+    void doEdit() {
+        editor.showEditor();
+    }
+
     String parseDate(String card) {
         // todo:
         // pull things that look like they might be dates from the card name listings
         // and return them here
-        return "A DATE";
-        // use regex here to match different date looking things?
+        StringBuilder toReturn = new StringBuilder();
+        Matcher m = Pattern.compile(
+                "(\\d{1,2}[-/]\\d{1,2}[-/]\\d{4}|\\d{1,2}[-/]\\d{1,2}|\\d{4}[-/]\\d{4}|\\d{4}[-/]\\d{2}|\\b\\d{4}\\b)",
+                Pattern.CASE_INSENSITIVE).matcher(card);
+        // or (while m.find() )
+        if (m.find()) toReturn.append(m.group(1));
+
+        return toReturn.toString();
     }
 
     // Keyword management functions here

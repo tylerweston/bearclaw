@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Model {
 
@@ -15,6 +16,8 @@ public class Model {
     ArrayList<String> currentKwords = new ArrayList<>();    // holds our current keywords
     ObservableList<String> observableKWords = FXCollections.observableArrayList(currentKwords);
                                                             // kwords observable
+
+    ArrayList<String> hockeySets;
 
     GUI gui;
     int currCategoryID = 64482; // default is sports cards & memorabilia
@@ -39,8 +42,17 @@ public class Model {
         // find out if we have a default keyword list, and if yes, save it
         // restore the directory we decided to save our excel output to
         catManager = new CategoryManager();
+        hockeySets = new ArrayList<String>(
+                Arrays.asList(  "UD",
+                                "Upper Deck",
+                                "SP"
+                )
+        );
     }
 
+    ArrayList<String> getHockeySets() {
+        return hockeySets;
+    }
     ObservableList<String> getObservableKWords() {
         return observableKWords;
     }

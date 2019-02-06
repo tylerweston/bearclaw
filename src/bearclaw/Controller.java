@@ -396,7 +396,14 @@ public class Controller {
         // todo:
         // -pull card set names here and return them
         // -compare to dictionary of known card names I suppose?
-        return "CARD SET";
+        StringBuilder toReturn = new StringBuilder("");
+        for (String c : model.getHockeySets()) {
+            if (card.contains(c)) {
+                toReturn.append(c);
+                toReturn.append(" ");
+            }
+        }
+        return toReturn.toString();
         // return null;
     }
 
@@ -405,6 +412,7 @@ public class Controller {
         // pull things that look like they might be dates from the card name listings
         // and return them here
         return "A DATE";
+        // use regex here to match different date looking things?
     }
 
     // Keyword management functions here

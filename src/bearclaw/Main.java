@@ -6,11 +6,12 @@ package bearclaw;
 
     todo:
 
-    - detect if keywords has changed since last save, prompt to save if so
-    - batch processing - set a default batch processing folder
+    - ONCE WE LOAD A KEYWORD LIST, OBSERVABLES ARE NOT UPDATED PROPERLY
+    - detect if keywords has changed since last save, prompt to save if so!
+    - batch processing - test and check this out
+    - problem with deleting keywords!
 
-
-    - simple built in text editor for subset list
+    - simple built in text editor for subset list (not necessary, cut entirely? or leave till last)
         - save subset text
         - fix up editor gui
 

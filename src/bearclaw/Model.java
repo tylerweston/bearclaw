@@ -85,10 +85,6 @@ public class Model {
         observableKWords.setAll(cur);
     }
 
-//    Categories getCurrCategory() {
-//
-//    }
-
     int getCurrCategoryID() {
         return currCategoryID;
     }

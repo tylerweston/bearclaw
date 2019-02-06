@@ -21,6 +21,7 @@ import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -99,6 +100,26 @@ public class Controller {
 
         for (File f : files) {
             // System.out.println(f.toString());
+            try {
+                FileInputStream fileInputStream
+                        = new FileInputStream(f);
+                ObjectInputStream objectInputStream
+                        = new ObjectInputStream(fileInputStream);
+
+                // todo: fix this
+                KeywordList kwords = (KeywordList) objectInputStream.readObject();
+                //model.setCurrentKwords(kwords.getKeywords());
+                //model.setCurrCategoryID(kwords.getMyCategory());
+                String fname = f.getName();
+                fname = fname.substring(0, fname.indexOf("."));
+                fname = fname + "-";
+                generateBatchReport(fname, kwords.getKeywords(), kwords.getMyCategory());
+                objectInputStream.close();
+            } catch (IOException e) {
+                addDebugLog("Cannot load default keywords");
+            } catch (ClassNotFoundException e) {
+                addDebugLog("Default keywords file corrupt");
+            }
         }
         // crawl through the current save directory and generate reports for ALL keywords
         // lists that are in that folder
@@ -108,6 +129,83 @@ public class Controller {
         // next, create a kwords object and pull the category ID and list of keywords from it
         // generate a report from that kwords object
         // close each file
+    }
+
+    public boolean generateBatchReport(String filename, ArrayList<String> kwords, int cat) {
+        model.addToDebug("Generating report...");
+        // first, open our excel sheet
+        if (model.getSaveDir() == null) {
+            model.addToDebug("No output folder selected");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("UH OH");
+            alert.setHeaderText(null);
+            alert.setContentText("Choose a directory to save output to");
+
+            alert.showAndWait();
+            return false;
+        }
+        model.addToDebug("Writing to " + model.getSaveDir().toString());
+
+        // todo: this should add date now, what do we want out to be instead
+        Date d = new Date();
+        SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd");
+        String excelFileName = "/" + filename + ft.format(d) + ".xls";
+
+        String excelFileLocation = model.getSaveDir().getPath() + excelFileName;
+        // todo:
+        // check if this file already exists and confirm overwrite if it does
+        // where do we get file name from? generate?
+
+
+        // create excel workbook
+        WritableWorkbook excelOutput = null;
+
+        try {
+            excelOutput = Workbook.createWorkbook(new File(excelFileLocation));
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+        // create excel sheet
+        int sheet = 0;
+        int words = 0;
+
+        // if we are loading from a batch file we want this to load its keyword from the file we're opening
+        for (String keyword : kwords) {
+            // this is good, model.getCurrentKwords does indeed contain loaded keywords
+            model.addToDebug("generating report for " + keyword +" on sheet "+sheet);
+            // pass the excel sheet to this function
+            generateReportEntry(keyword, excelOutput, sheet, cat);
+            sheet++;
+            words++;
+        }
+        if (words == 0) {
+            model.addToDebug("No keywords found, aborting repott");
+            return false;
+        }
+        // now, write everything
+        model.addToDebug("Writing to report...");
+        try {
+            excelOutput.write();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return false;
+        }
+        model.addToDebug("Closing report...");
+        // close book
+        if (excelOutput != null) {
+            try {
+                excelOutput.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (WriteException e) {
+                e.printStackTrace();
+            }
+        }
+        model.addToDebug("Success");
+        return true;
     }
 
 
@@ -151,13 +249,12 @@ public class Controller {
         int sheet = 0;
         int words = 0;
 
-        // hello, this is hack, please delete later::
         // if we are loading from a batch file we want this to load its keyword from the file we're opening
         for (String keyword : model.getObservableKWords()) {
             // this is good, model.getCurrentKwords does indeed contain loaded keywords
             model.addToDebug("generating report for " + keyword +" on sheet "+sheet);
             // pass the excel sheet to this function
-            generateReportEntry(keyword, excelOutput, sheet);
+            generateReportEntry(keyword, excelOutput, sheet, model.getCurrCategoryID());
             sheet++;
             words++;
         }
@@ -190,7 +287,7 @@ public class Controller {
         return true;
     }
 
-    public boolean generateReportEntry(String keyword, WritableWorkbook excelOutput, int sheet) {
+    public boolean generateReportEntry(String keyword, WritableWorkbook excelOutput, int sheet, int category) {
         // this will eventually be replaced with custom searches!
 
         String keywords = keyword.replace(" ", "%20");
@@ -216,7 +313,7 @@ public class Controller {
         https_url_sb.append("&");
         // we want to get category ID here from somewhere else!
         https_url_sb.append("categoryId=");
-        https_url_sb.append(model.currCategoryID);
+        https_url_sb.append(category);
         https_url_sb.append("&");
         https_url_sb.append("itemFilter(0).name=SoldItemsOnly&");
         https_url_sb.append("itemFilter(0).value=true&");
@@ -435,7 +532,7 @@ public class Controller {
         toAdd = toAdd.trim();
         if ("".compareTo(toAdd) != 0 && "Add tags here...".compareTo(toAdd) != 0) {
             if (!model.getCurrentKwords().contains(toAdd)) {
-                this.addDebugLog("calling kword to add keyword");
+//                this.addDebugLog("calling kword to add keyword");
                 model.addKeyword(toAdd);
                 return true;
             }

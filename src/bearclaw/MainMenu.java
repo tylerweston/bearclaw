@@ -64,6 +64,7 @@ class MainMenu extends MenuBar {
         MenuItem toolsEditSubsets = new MenuItem("_Edit Subsets");
         toolsEditSubsets.setAccelerator(new KeyCodeCombination(KeyCode.E, KeyCombination.SHORTCUT_DOWN));
         toolsEditSubsets.setOnAction((ae) -> controller.doEdit());
+        toolsEditSubsets.disableProperty().bind(setDisabled);
 
         MenuItem toolsDebugLog = new MenuItem("_Log");
         toolsDebugLog.setAccelerator(new KeyCodeCombination(KeyCode.L, KeyCombination.SHORTCUT_DOWN));

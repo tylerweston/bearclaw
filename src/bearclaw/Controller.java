@@ -22,7 +22,9 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Optional;
 
 import static javafx.collections.FXCollections.observableArrayList;
@@ -36,6 +38,9 @@ public class Controller {
 
     public Controller(Model setModel) {
         this.model = setModel;
+    }
+
+    public void loadDefaults() {
         if (hasDefaultKeywords()) {
             model.addToDebug("Found default keywords! Loading.");
             loadKeywords();
@@ -65,6 +70,7 @@ public class Controller {
     void doExit() {
         // to do here:
         // clean up and save any data, etc as necessary
+        // ie, check if any of our lists have changed, etc and prompt to save if they have
         Platform.exit();
         System.exit(0);
     }
@@ -73,8 +79,30 @@ public class Controller {
 
     void batchGenerate() {
         // todo:
+        File base = chooseBatchDir();
+        // should we do this in default folder or ask for a specific folder?
+        if (base == null) {
+            model.addToDebug("Bad batch generate directory!");
+            return;
+        }
+        model.addToDebug("Generating keyword lists");
+        File[] files = base.listFiles(new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return name.toLowerCase().endsWith(".bc");
+            }
+        });
+
+        for (File f : files) {
+            // System.out.println(f.toString());
+        }
         // crawl through the current save directory and generate reports for ALL keywords
         // lists that are in that folder
+
+        // next crawl that folder and get a list of all filenames ending in .bcs
+        // open and deserialize that file
+        // next, create a kwords object and pull the category ID and list of keywords from it
+        // generate a report from that kwords object
+        // close each file
     }
 
 
@@ -94,7 +122,11 @@ public class Controller {
         }
         model.addToDebug("Writing to " + model.getSaveDir().toString());
 
-        String excelFileName = "/out.xls";
+        // todo: this should add date now, what do we want out to be instead
+        Date d = new Date();
+        SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd");
+        String excelFileName = "/out-" + ft.format(d) + ".xls";
+
         String excelFileLocation = model.getSaveDir().getPath() + excelFileName;
         // todo:
         // check if this file already exists and confirm overwrite if it does
@@ -115,6 +147,7 @@ public class Controller {
         int words = 0;
 
         // hello, this is hack, please delete later::
+        // if we are loading from a batch file we want this to load its keyword from the file we're opening
         for (String keyword : model.getObservableKWords()) {
             // this is good, model.getCurrentKwords does indeed contain loaded keywords
             model.addToDebug("generating report for " + keyword +" on sheet "+sheet);
@@ -176,6 +209,7 @@ public class Controller {
         https_url_sb.append("keywords=");
         https_url_sb.append(keywords);
         https_url_sb.append("&");
+        // we want to get category ID here from somewhere else!
         https_url_sb.append("categoryId=64482&");
         https_url_sb.append("itemFilter(0).name=SoldItemsOnly&");
         https_url_sb.append("itemFilter(0).value=true&");
@@ -187,7 +221,6 @@ public class Controller {
 
         // okay main loop starts here,
         // grab every page number until total results < 100
-//        System.out.println("generated url " + https_url_sb);
         do {
             // after we've built our string using our stringsbuilder, convert it to a string
             String https_url = https_url_sb.toString() + pageNum;
@@ -445,12 +478,11 @@ public class Controller {
             KeywordList kwords = (KeywordList) objectInputStream.readObject();
             model.setCurrentKwords(kwords.getKeywords());
             model.setCurrCategoryID(kwords.getMyCategory());
-            System.out.println(CategoryManager.getString(kwords.getMyCategory()));
+
             if (gui!= null) gui.setComboBox(CategoryManager.getString(kwords.getMyCategory()).trim());
             objectInputStream.close();
         } catch (IOException e) {
             addDebugLog("Cannot load default keywords");
-//            addDebugLog(e.getMessage());
         } catch (ClassNotFoundException e) {
             addDebugLog("Default keywords file corrupt");
         }
@@ -475,6 +507,19 @@ public class Controller {
             boolean doSetDefaultFolder = saveDefaultDialog("save folder");
             if (doSetDefaultFolder) setDefaultFolder();
         }
+    }
+
+    File chooseBatchDir() {
+        DirectoryChooser dc = new DirectoryChooser();
+        dc.setTitle("select directory to batch process");
+        if (!hasDefaultFolder()) {
+            File desktop = new File(System.getProperty("user.home") + File.separator + "Desktop");
+            if (desktop != null) dc.setInitialDirectory(desktop);
+        } else {
+            dc.setInitialDirectory(model.getSaveDir());
+        }
+        File selectedFile = dc.showDialog(gui.getStage());
+        return selectedFile;
     }
 
     void setDefaultFolder() {

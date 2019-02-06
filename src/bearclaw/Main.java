@@ -6,29 +6,24 @@ package bearclaw;
 
     todo:
 
-    - need a frontend OBSERVABLE list that is linked to BACKEND KeywordList
-    - All access and modifcation goes through FRONTEND that is viewed by BACKEND
+    - testing, testing, testing
+    - can this handle weird characters?
+    - is capitalization important?
+    - batch processing - set a default batch processing folder
+    - write filename should be name of loaded list + date + .bc
+    - should prefs.bcs have a separate file for default writing XL and default batch processing?
     - is there any way to generate a useful graph from this
-        data?
+        data (???)
     - parsing of cards that get returned, separate
         - DATE (how to get something that looks like a date?)
         - run of cards (pull from database)
-    - loading keywords does NOT work, this needs to be fixed!
     - right now its just list spaghetti, got to optimize and pretty it up
     - detect if keywords has changed since last save, prompt to save if so
-    - need to select a default category for category ID?
-    - if we change category ID, write it to KeywordManager
-    - make sure we update category ID when we load a new KeywordManager
 
     - add more options (ie what data to write to file !! )
-    - add keyword name to top of each sheet (?)
     - allow different category IDs (!)
     - cleaup GUI, move to XML with controllers and whatnot? how does that even work?
     - debug log window is buggy LUL
-    - include saving the category ID with list so that you can have different lists
-      for different categories (ie, load a list and it will automatically set category ID)
-        - this will involve changing the keyword list to be an object that includes both the
-          list and the category that is attached to the list
     - change report generating to handle different category IDS
     - move things to packages?
 
@@ -53,6 +48,7 @@ public class Main extends Application {
         GUI gui = new GUI(primaryStage, controller);
 
         controller.setGUI(gui);
+        controller.loadDefaults();
     }
 
     public static void main(String[] args) {

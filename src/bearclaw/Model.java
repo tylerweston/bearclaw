@@ -96,9 +96,7 @@ public class Model {
     }
 
     public void addKeyword(String kword) {
-        System.out.println("adding a keyword in KeywordList!");
         observableKWords.add(kword);
-        System.out.print(observableKWords);
     }
 
     public void removeKeyword(String kword) {

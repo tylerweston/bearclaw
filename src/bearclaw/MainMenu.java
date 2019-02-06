@@ -59,7 +59,7 @@ class MainMenu extends MenuBar {
         MenuItem toolsBatchGenerate = new MenuItem("_Batch Generate");
         toolsBatchGenerate.setAccelerator(new KeyCodeCombination(KeyCode.B, KeyCombination.SHORTCUT_DOWN));
         toolsBatchGenerate.setOnAction((ae) -> controller.batchGenerate());
-        toolsBatchGenerate.disableProperty().bind(setDisabled);
+        //toolsBatchGenerate.disableProperty().bind(setDisabled);
 
 
         MenuItem toolsDebugLog = new MenuItem("_Log");

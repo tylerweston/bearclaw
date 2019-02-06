@@ -1,12 +1,7 @@
 package bearclaw;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-
 import java.io.Serializable;
 import java.util.ArrayList;
-
-import static javafx.collections.FXCollections.observableArrayList;
 
 
 public class KeywordList implements Serializable {

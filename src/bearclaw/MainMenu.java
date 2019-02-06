@@ -1,14 +1,14 @@
 package bearclaw;
 
-        import javafx.beans.property.BooleanProperty;
-        import javafx.beans.property.SimpleBooleanProperty;
-        import javafx.scene.control.Menu;
-        import javafx.scene.control.MenuBar;
-        import javafx.scene.control.MenuItem;
-        import javafx.scene.control.SeparatorMenuItem;
-        import javafx.scene.input.KeyCode;
-        import javafx.scene.input.KeyCodeCombination;
-        import javafx.scene.input.KeyCombination;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 
 class MainMenu extends MenuBar {
 

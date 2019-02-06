@@ -1,8 +1,10 @@
 package bearclaw;
 
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.DirectoryChooser;
@@ -26,8 +28,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
-
-import static javafx.collections.FXCollections.observableArrayList;
 
 public class Controller {
 
@@ -299,20 +299,30 @@ public class Controller {
                 String itemName;
                 String itemPrice;
                 String itemSoldDate;
+                String itemCardDate;
+                String itemCardTags;
 
                 totalResults = nList.getLength();
 
                 jxl.write.Label labelItemName;
                 jxl.write.Label labelItemPrice;
                 jxl.write.Label labelSoldDate;
+                jxl.write.Label labelCardTag;
+                jxl.write.Label labelCardDate;
 
                 labelItemName = new jxl.write.Label(0, 0, "Name");
                 labelItemPrice = new jxl.write.Label(1, 0, "Selling Price");
                 labelSoldDate = new jxl.write.Label(2, 0, "Selling Date");
+                labelCardTag = new jxl.write.Label(3, 0, "Card Set");
+                labelCardDate = new jxl.write.Label(4, 0, "Card Date");
+
                 try {
                     outSheet.addCell(labelItemName);
                     outSheet.addCell(labelItemPrice);
                     outSheet.addCell(labelSoldDate);
+                    outSheet.addCell(labelCardTag);
+                    outSheet.addCell(labelCardDate);
+
                 } catch (WriteException e) {
                     e.printStackTrace();
                     return false;
@@ -331,16 +341,37 @@ public class Controller {
                         itemPrice = parseItem.getElementsByTagName("convertedCurrentPrice").item(0).getTextContent();
                         itemSoldDate = parseItem.getElementsByTagName("endTime").item(0).getTextContent();
 
+                        // todo:
+                        // pull possible card set names and card dates
+                        itemCardTags = parseName(itemName);
+                        itemCardDate = parseDate(itemName);
+
 //                        System.out.println("name:" + itemName + " price: " + itemPrice);
                         // this is to create a listing item if we end up wanting to do this:
                         int writeIndex = ((pageNum - 2) * maxResultsPerPage) + i + 1;
                         labelItemName = new jxl.write.Label(0, writeIndex, itemName);
                         labelItemPrice = new jxl.write.Label(1, writeIndex, itemPrice);
+                        // substring(0, 10) to just write date, increase if we want time for some reason?
                         labelSoldDate = new jxl.write.Label(2, writeIndex, itemSoldDate.substring(0, 10));
+
+                        if (itemCardTags != null) {
+                            labelCardTag = new jxl.write.Label(3, writeIndex, itemCardTags);
+                        }
+                        if (itemCardDate != null) {
+                            labelCardDate = new jxl.write.Label(4, writeIndex, itemCardDate);
+                        }
+                        // todo:
+                        // - this is where we will write any additional parsing information
                         try {
                             outSheet.addCell(labelItemName);
                             outSheet.addCell(labelItemPrice);
                             outSheet.addCell(labelSoldDate);
+                            if (itemCardTags != null) {
+                                outSheet.addCell(labelCardTag);
+                            }
+                            if (itemCardDate != null) {
+                                outSheet.addCell(labelCardDate);
+                            }
                         } catch (WriteException e) {
                             e.printStackTrace();
                             return false;
@@ -359,6 +390,21 @@ public class Controller {
         } while (totalResults == maxResultsPerPage);
 
         return true;
+    }
+
+    String parseName(String card) {
+        // todo:
+        // -pull card set names here and return them
+        // -compare to dictionary of known card names I suppose?
+        return "CARD SET";
+        // return null;
+    }
+
+    String parseDate(String card) {
+        // todo:
+        // pull things that look like they might be dates from the card name listings
+        // and return them here
+        return "A DATE";
     }
 
     // Keyword management functions here

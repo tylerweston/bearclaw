@@ -19,10 +19,10 @@ public class Model {
     ArrayList<String> currentKwords = new ArrayList<>();    // holds our current keywords
     ObservableList<String> observableKWords = FXCollections.observableArrayList(currentKwords);
                                                             // kwords observable
-
+    Controller controller;
     ArrayList<String> hockeySets;
 
-    GUI gui;
+//    GUI gui;
     int currCategoryID = 64482; // default is sports cards & memorabilia
     final String prefsFile = "prefs.bcs";
 
@@ -45,14 +45,16 @@ public class Model {
         // find out if we have a default keyword list, and if yes, save it
         // restore the directory we decided to save our excel output to
         catManager = new CategoryManager();
-        // todo:
-        // move this desired keywords list to a TXT file that we can edit
 
-        hockeySets = new ArrayList<String>();
-        loadHockeySets();
+//        loadHockeySets();
+    }
+
+    void setController(Controller c) {
+        controller = c;
     }
 
     void loadHockeySets() {
+        hockeySets = new ArrayList<String>();
         File subsetFile= new File("subsets.txt");
         addToDebug("Grabbing subsets list");
         try {
@@ -82,6 +84,8 @@ public class Model {
 
     void setCurrentKwords(ArrayList<String> cur) {
         currentKwords = cur;
+//        observableKWords = FXCollections.observableArrayList(currentKwords);
+        observableKWords.clear();
         observableKWords.setAll(cur);
     }
 
@@ -94,13 +98,13 @@ public class Model {
     }
 
     void addToDebug(String toAdd) {
-        if (gui != null) gui.setDebugText(toAdd);
+        if (controller.getGUI() != null) controller.getGUI().setDebugText(toAdd);
         debugLog.add(toAdd);
     }
 
-    void setGui(GUI g) {
-        gui = g;
-    }
+//    void setGui(GUI g) {
+//        gui = g;
+//    }
 
     ArrayList<String> getDebugLog() {
         return debugLog;

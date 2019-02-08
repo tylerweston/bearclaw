@@ -37,6 +37,7 @@ public class Controller {
     private GUI gui;
     private Model model;
     private SimpleEditor editor;
+    boolean hasGUI = false;
 
     // Main Controller functions here
 
@@ -55,11 +56,13 @@ public class Controller {
             getDefaultFolder();
             model.addToDebug("Set default save folder to "+model.getSaveDir().toString());
         }
+        model.loadHockeySets();
         model.addToDebug("Done setting defaults...");
     }
 
     public void setGUI(GUI gui) {
         this.gui = gui;
+        hasGUI = true;
     }
 
     ArrayList<String> getKwords() {
@@ -207,8 +210,6 @@ public class Controller {
         model.addToDebug("Success");
         return true;
     }
-
-
 
     public boolean generateReport() {
         model.addToDebug("Generating report...");
@@ -496,6 +497,8 @@ public class Controller {
         return true;
     }
 
+    // Report helper functions
+
     String parseName(String card) {
         StringBuilder toReturn = new StringBuilder("");
         for (String c : model.getHockeySets()) {
@@ -506,10 +509,6 @@ public class Controller {
         }
         return toReturn.toString();
         // return null;
-    }
-
-    void doEdit() {
-        editor.showEditor();
     }
 
     String parseDate(String card) {
@@ -790,9 +789,22 @@ public class Controller {
         alert.showAndWait();
     }
 
+    void doEdit() {
+        editor.showEditor();
+    }
+
     void setCategory(String s){
         model.setCurrCategoryID(CategoryManager.getID(s));
     }
+
+    GUI getGUI() {
+        if (hasGUI) return gui;
+        return null;
+    }
+//
+//    boolean hasGUI() {
+//        return hasGUI;
+//    }
 
 }
 

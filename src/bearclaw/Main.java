@@ -40,10 +40,11 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         Model model = new Model();
-        controller= new Controller(model);
+        controller = new Controller(model);
+        model.setController(controller);
         GUI gui = new GUI(primaryStage, controller);
 
-        model.setGui(gui);
+        // model.setGui(gui);
         controller.setGUI(gui);
         controller.loadDefaults();
     }

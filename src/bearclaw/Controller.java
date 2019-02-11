@@ -2,6 +2,9 @@ package bearclaw;
 
 import javafx.application.Platform;
 import javafx.scene.control.*;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.DirectoryChooser;
@@ -26,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -91,18 +95,23 @@ public class Controller {
             alert.getButtonTypes().setAll(buttonSave, buttonDiscard, buttonTypeCancel);
 
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == buttonSave){
-                // do saving here
-                addDebugLog("Saving changes");
-                saveKeywords(model.getLoadedFilename());
-            } else if (result.get() == buttonDiscard) {
-                // do nothing here and continue with exit
-            } else {
-                return; // this will abort close (?)
+            if (result.isPresent()) {
+                if (result.get() == buttonSave) {
+                    // do saving here
+                    addDebugLog("Saving changes");
+                    saveKeywords(model.getLoadedFilename());
+                } else if (result.get() == buttonDiscard) {
+                    // do nothing here and continue with exit
+                } else {
+                    return; // this will abort close (?)
+                }
             }
         }
+
+        // this is the actual end point of the program, return system success
         Platform.exit();
         System.exit(0);
+
     }
 
     // Report generating functions here
@@ -814,12 +823,30 @@ public class Controller {
     }
 
     void showAbout() {
+
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.initOwner(gui.getStage());
         alert.setTitle("About");
         alert.setHeaderText(null);
-        alert.setContentText("Coding: Tyler Weston 2019");
+        alert.setContentText("BearClaw v" + model.getVer() + "\n Coding: Tyler Weston 2019");
 
+        Image image = new Image(Controller.class.getResourceAsStream( "icon.png" ));
+        ImageView logo = new ImageView(image);
+        logo.setFitWidth(75);
+        logo.setFitHeight(75);
+        logo.setOnMouseClicked((ae) -> {
+            Random rnd = new Random();
+            BlendMode[] blends = {
+                    BlendMode.GREEN,
+                    BlendMode.BLUE,
+                    BlendMode.RED,
+            };
+            logo.setBlendMode(blends[rnd.nextInt(blends.length)]);
+        });
+
+        alert.setGraphic(logo);
         alert.showAndWait();
+
     }
 
     void doEdit() {

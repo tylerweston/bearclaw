@@ -61,7 +61,7 @@ public class GUI {
             }
 
         };
-        timer.schedule(task, 5000l,5000l);
+        timer.schedule(task, 7500L,7500L);
         // automatically clear debug text every now and then
 
         GridPane root = new GridPane();

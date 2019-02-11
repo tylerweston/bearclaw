@@ -44,7 +44,6 @@ public class Main extends Application {
         model.setController(controller);
         GUI gui = new GUI(primaryStage, controller);
 
-        // model.setGui(gui);
         controller.setGUI(gui);
         controller.loadDefaults();
     }

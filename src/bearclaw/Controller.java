@@ -10,6 +10,7 @@ import javafx.scene.layout.Priority;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import jxl.Workbook;
+import jxl.write.WritableHyperlink;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
@@ -228,7 +229,7 @@ public class Controller {
 
         // todo: this should add date now, what do we want out to be instead
         Date d = new Date();
-        SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd");
+        SimpleDateFormat ft = new SimpleDateFormat ("dd-MM-yyyy");
         String excelFileName = "/out-" + ft.format(d) + ".xls";
 
         String excelFileLocation = model.getSaveDir().getPath() + excelFileName;
@@ -406,6 +407,7 @@ public class Controller {
                 String itemSoldDate;
                 String itemCardDate;
                 String itemCardTags;
+                String itemUrl;
 
                 totalResults = nList.getLength();
 
@@ -414,12 +416,14 @@ public class Controller {
                 jxl.write.Label labelSoldDate;
                 jxl.write.Label labelCardTag;
                 jxl.write.Label labelCardDate;
+                jxl.write.Label labelItemUrl;
 
                 labelItemName = new jxl.write.Label(0, 0, "Name");
                 labelItemPrice = new jxl.write.Label(1, 0, "Selling Price");
                 labelSoldDate = new jxl.write.Label(2, 0, "Selling Date");
                 labelCardTag = new jxl.write.Label(3, 0, "Card Set");
                 labelCardDate = new jxl.write.Label(4, 0, "Card Date");
+                labelItemUrl = new jxl.write.Label(5, 0, "Listing URL");
 
                 try {
                     outSheet.addCell(labelItemName);
@@ -427,6 +431,7 @@ public class Controller {
                     outSheet.addCell(labelSoldDate);
                     outSheet.addCell(labelCardTag);
                     outSheet.addCell(labelCardDate);
+                    outSheet.addCell(labelItemUrl);
 
                 } catch (WriteException e) {
                     e.printStackTrace();
@@ -445,15 +450,23 @@ public class Controller {
                         itemName = parseItem.getElementsByTagName("title").item(0).getTextContent();
                         itemPrice = parseItem.getElementsByTagName("convertedCurrentPrice").item(0).getTextContent();
                         itemSoldDate = parseItem.getElementsByTagName("endTime").item(0).getTextContent();
+                        itemUrl = parseItem.getElementsByTagName("viewItemURL").item(0).getTextContent();
 
-                        // todo:
-                        // pull possible card set names and card dates
                         itemCardTags = parseName(itemName);
                         itemCardDate = parseDate(itemName);
 
-//                        System.out.println("name:" + itemName + " price: " + itemPrice);
-                        // this is to create a listing item if we end up wanting to do this:
                         int writeIndex = ((pageNum - 2) * maxResultsPerPage) + i + 1;
+
+                        try {
+                            // make this a clickable hyperlink
+                            URL writeUrl = new URL(itemUrl);
+                            WritableHyperlink wh = new WritableHyperlink(5, writeIndex, 5, writeIndex, writeUrl);
+                            outSheet.addHyperlink(wh);
+                        } catch (Exception e) {
+                            addDebugLog("Error getting item URL");
+                            e.printStackTrace();
+                        }
+
                         labelItemName = new jxl.write.Label(0, writeIndex, itemName);
                         labelItemPrice = new jxl.write.Label(1, writeIndex, itemPrice);
                         // substring(0, 10) to just write date, increase if we want time for some reason?
@@ -465,8 +478,7 @@ public class Controller {
                         if (itemCardDate != null) {
                             labelCardDate = new jxl.write.Label(4, writeIndex, itemCardDate);
                         }
-                        // todo:
-                        // - this is where we will write any additional parsing information
+
                         try {
                             outSheet.addCell(labelItemName);
                             outSheet.addCell(labelItemPrice);
@@ -484,16 +496,15 @@ public class Controller {
                     }
                 }
 
-
-
                 model.addToDebug("found " + totalResults + " items on page " + (pageNum-1));
 
             } else {
                 model.addToDebug("GET NOT WORKED");
                 return false;
             }
-        } while (totalResults == maxResultsPerPage);
 
+        } while (totalResults == maxResultsPerPage);    // keep going until we get less than the total amount
+                                                        // this is a good indicator we're finished
         return true;
     }
 
@@ -834,6 +845,8 @@ http://svcs.ebay.com/services/search/FindingService/v1?
 
 
  */
+
+// queries are NOT case sensitive
 
 // app key:
 // TylerWes-BearClaw-PRD-7bddb6120-21fb4e35

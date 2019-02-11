@@ -82,7 +82,7 @@ class MainMenu extends MenuBar {
 
 
         toolsMenu.getItems().add(toolsBatchGenerate);
-        toolsMenu.getItems().add(toolsEditSubsets);
+//        toolsMenu.getItems().add(toolsEditSubsets);
         toolsMenu.getItems().add(toolsSetDefaultKeywords);
         toolsMenu.getItems().add(toolsSetDefaultFolder);
 //        toolsMenu.getItems().add(new SeparatorMenuItem());
@@ -105,7 +105,7 @@ class MainMenu extends MenuBar {
         aboutItem.setOnAction((ae) -> controller.showAbout());
         aboutMenu.getItems().add(aboutItem);
 
-        this.getMenus().addAll(fileMenu , toolsMenu, debugMenu, aboutMenu);    // add tools back in if needed
+        this.getMenus().addAll(fileMenu , toolsMenu, /*debugMenu,*/ aboutMenu);    // add tools back in if needed
     }
 
     /**

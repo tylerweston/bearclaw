@@ -5,7 +5,7 @@ public class Categories {
     private String categoryName;
     private int categoryID;
 
-    public Categories(String myName, int myID) {
+    Categories(String myName, int myID) {
         categoryName = myName;
         categoryID = myID;
     }
@@ -14,11 +14,11 @@ public class Categories {
         return categoryName;
     }
 
-    public int getID() {
+    int getID() {
         return categoryID;
     }
 
-    public String getCategoryName() {
+    String getCategoryName() {
         return categoryName;
     }
 

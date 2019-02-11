@@ -6,6 +6,7 @@ package bearclaw;
 
     todo:
 
+    - Ok, so now if we DELETE a keyword, we can no longer add keywords??
     - ONCE WE LOAD A KEYWORD LIST, OBSERVABLES ARE NOT UPDATED PROPERLY
     - batch processing - test and check this out
     - problem with deleting keywords!

@@ -1,6 +1,5 @@
 package bearclaw;
 
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -12,14 +11,6 @@ import javafx.scene.input.KeyCombination;
 
 class MainMenu extends MenuBar {
 
-    private final BooleanProperty setDisabled = new SimpleBooleanProperty(true);
-
-    /**
-     * Creates a new main Menu for the program.
-     *
-     * @param controller    a controller object to manage
-     *                      executive functions
-     */
     MainMenu(Controller controller) {
 
         // file menu
@@ -64,7 +55,7 @@ class MainMenu extends MenuBar {
         MenuItem toolsEditSubsets = new MenuItem("_Edit Subsets");
         toolsEditSubsets.setAccelerator(new KeyCodeCombination(KeyCode.E, KeyCombination.SHORTCUT_DOWN));
         toolsEditSubsets.setOnAction((ae) -> controller.doEdit());
-        toolsEditSubsets.disableProperty().bind(setDisabled);
+        toolsEditSubsets.disableProperty().bind( new SimpleBooleanProperty(true));
 
         MenuItem toolsDebugLog = new MenuItem("_Log");
         toolsDebugLog.setAccelerator(new KeyCodeCombination(KeyCode.L, KeyCombination.SHORTCUT_DOWN));
@@ -106,13 +97,6 @@ class MainMenu extends MenuBar {
         aboutMenu.getItems().add(aboutItem);
 
         this.getMenus().addAll(fileMenu , toolsMenu, /*debugMenu,*/ aboutMenu);    // add tools back in if needed
-    }
-
-    /**
-     * Enable menu options that should only be available when a photo is loaded
-     */
-    void enableView() {
-        setDisabled.setValue(false);
     }
 }
 

@@ -38,16 +38,16 @@ public class Controller {
     private GUI gui;
     private Model model;
     private SimpleEditor editor;
-    boolean hasGUI = false;
+    private boolean hasGUI = false;
 
     // Main Controller functions here
 
-    public Controller(Model setModel) {
+    Controller(Model setModel) {
         this.model = setModel;
         editor = new SimpleEditor();
     }
 
-    public void loadDefaults() {
+    void loadDefaults() {
         if (hasDefaultKeywords()) {
             model.addToDebug("Found default keywords! Loading.");
             loadKeywords();
@@ -62,14 +62,14 @@ public class Controller {
         model.setHasChanged(false);
     }
 
-    public void setGUI(GUI gui) {
+    void setGUI(GUI gui) {
         this.gui = gui;
         hasGUI = true;
     }
 
-    ArrayList<String> getKwords() {
-        return model.getCurrentKwords();
-    }
+//    ArrayList<String> getKwords() {
+//        return model.getCurrentKwords();
+//    }
 
     void dumpKwords() {
         model.addToDebug("Dumping keywords");
@@ -82,7 +82,7 @@ public class Controller {
         // to do here:
         // clean up and save any data, etc as necessary
         // ie, check if any of our lists have changed, etc and prompt to save if they have
-        if (model.hasChanged) {
+        if (model.isChanged()) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Unsaved changes in keyword list");
             alert.setHeaderText("Do you want to save changes to your keyword list? This will overwrite current list");
@@ -102,6 +102,7 @@ public class Controller {
                     saveKeywords(model.getLoadedFilename());
                 } else if (result.get() == buttonDiscard) {
                     // do nothing here and continue with exit
+
                 } else {
                     return; // this will abort close (?)
                 }
@@ -164,7 +165,7 @@ public class Controller {
         // close each file
     }
 
-    public boolean generateBatchReport(String filename, ArrayList<String> kwords, int cat) {
+    boolean generateBatchReport(String filename, ArrayList<String> kwords, int cat) {
         model.addToDebug("Generating report...");
         // first, open our excel sheet
         if (model.getSaveDir() == null) {
@@ -241,7 +242,7 @@ public class Controller {
         return true;
     }
 
-    public boolean generateReport() {
+     boolean generateReport() {
         model.addToDebug("Generating report...");
         // first, open our excel sheet
         if (model.getSaveDir() == null) {
@@ -318,7 +319,7 @@ public class Controller {
         return true;
     }
 
-    public boolean generateReportEntry(String keyword, WritableWorkbook excelOutput, int sheet, int category) {
+    boolean generateReportEntry(String keyword, WritableWorkbook excelOutput, int sheet, int category) {
         // this will eventually be replaced with custom searches!
 
         String keywords = keyword.replace(" ", "%20");
@@ -567,7 +568,7 @@ public class Controller {
 
     // Keyword management functions here
 
-    public boolean addItem(String toAdd) {
+    boolean addItem(String toAdd) {
         toAdd = toAdd.trim();
         if ("".compareTo(toAdd) != 0 && "Add tags here...".compareTo(toAdd) != 0) {
             if (!model.getCurrentKwords().contains(toAdd)) {
@@ -580,19 +581,17 @@ public class Controller {
         return false;
     }
 
-    public boolean removeItem(int toRemove){
+    void removeItem(int toRemove){
         model.removeKeyword(toRemove);
-        return true;
     }
 
-    public boolean removeItems(ArrayList<String> toRemove){
+    void removeItems(ArrayList<String> toRemove){
         model.removeKeywords(toRemove);
-        return true;
     }
 
     // Keyword management functions
 
-    boolean hasDefaultKeywords() {
+    private boolean hasDefaultKeywords() {
         File tmpDir = new File("default.bc");
         return tmpDir.exists();
     }
@@ -621,7 +620,7 @@ public class Controller {
         }
     }
 
-    void saveChooser() {
+    private void saveChooser() {
         // do saving here
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Keywords");
@@ -642,7 +641,7 @@ public class Controller {
         return model;
     }
 
-    void saveKeywords(String fileName) {
+    private void saveKeywords(String fileName) {
         if (!fileName.contains(".")) {
             fileName += ".bc";
         }
@@ -664,11 +663,11 @@ public class Controller {
         }
     }
 
-    void loadKeywords() {
+    private void loadKeywords() {
         loadKeywords("default");
     }
 
-    void loadKeywords(String fileName) {
+    private void loadKeywords(String fileName) {
         if (!fileName.contains(".")) {
             fileName += ".bc";
         }
@@ -696,7 +695,7 @@ public class Controller {
 
     // Save folder functions
 
-    boolean hasDefaultFolder() {
+    private boolean hasDefaultFolder() {
         // check if we have a default folder saved
         File tmpDir = new File(model.getPrefsFile());
         return tmpDir.exists();
@@ -715,7 +714,7 @@ public class Controller {
         }
     }
 
-    File chooseBatchDir() {
+    private File chooseBatchDir() {
         DirectoryChooser dc = new DirectoryChooser();
         dc.setTitle("select directory to batch process");
         if (!hasDefaultFolder()) {
@@ -744,7 +743,7 @@ public class Controller {
         }
     }
 
-    void getDefaultFolder() {
+    private void getDefaultFolder() {
         // load default saving folder here
         // to do: deserialize the file and set default folder
         try {
@@ -802,7 +801,7 @@ public class Controller {
 
     // Other functions here
 
-    boolean saveDefaultDialog(String which) {
+    private boolean saveDefaultDialog(String which) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Save default");
         alert.setHeaderText("Looks like you have no "+which+" default yet. Save this as default?");
@@ -814,10 +813,12 @@ public class Controller {
         alert.getButtonTypes().setAll(buttonYes, buttonNo);
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == buttonYes){
-            return true;
-        } else if (result.get() == buttonNo) {
-            return false;
+        if (result.isPresent()) {
+            if (result.get() == buttonYes) {
+                return true;
+            } else if (result.get() == buttonNo) {
+                return false;
+            }
         }
         return false;
     }

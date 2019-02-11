@@ -16,11 +16,11 @@ import java.util.ArrayList;
             Entertainment Memorabilia	        45100
 */
 
-public class CategoryManager {
+class CategoryManager {
 
-    private static ArrayList<Categories> categories = new ArrayList<Categories>();
+    private static ArrayList<Categories> categories = new ArrayList<>();
 
-    public CategoryManager() {
+    CategoryManager() {
         categories.add(new Categories("Collectibles", 1));
         categories.add(new Categories("Antiques", 20081));
         categories.add(new Categories("Art", 550));
@@ -34,18 +34,18 @@ public class CategoryManager {
         categories.add(new Categories("Entertainment Memorabilia", 45100));
     }
 
-    public ArrayList<Categories> getCategories() {
+    ArrayList<Categories> getCategories() {
         return categories;
     }
 
-    public static String getString(int n) {
+    static String getString(int n) {
         for (Categories c: categories) {
             if (c.getID() == n) return c.getCategoryName();
         }
         return "None";
     }
 
-    public static int getID(String s) {
+    static int getID(String s) {
         // return category ID associated with string, -1 if category DNE
         // runs worst case theta(n)
         for (Categories c: categories) {

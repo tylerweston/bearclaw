@@ -3,17 +3,16 @@ package bearclaw;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-
-public class KeywordList implements Serializable {
+class KeywordList implements Serializable {
 
     ArrayList<String> keywords = new ArrayList<>();
-    int myCategory;
+    private int myCategory;
 
-    public KeywordList() {
+    KeywordList() {
         // do any initialization here?
     }
 
-    public void setMyCategory(int myCategory) {
+    void setMyCategory(int myCategory) {
         this.myCategory = myCategory;
     }
 

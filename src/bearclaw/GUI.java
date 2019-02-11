@@ -97,6 +97,14 @@ public class GUI {
 
         addTagText = new TextField("Add tags here...");
 
+        // add tags by pressing enter
+        addTagText.setOnKeyPressed((ke) -> {
+            if (ke.getCode() == KeyCode.ENTER) {
+                controller.addDebugLog("Adding keyword!");
+                addKeyword();
+            }
+        });
+        
         // if you clicked the text field and it still says "Add tags here..." clear it for user
         addTagText.setOnMouseClicked(new EventHandler<MouseEvent>() {
         @Override
@@ -105,14 +113,6 @@ public class GUI {
                 if (addTagText.getCharacters().toString().compareTo("Add tags here...") == 0) {
                     addTagText.setText("");
                 }
-            }
-        });
-
-        // add tags by pressing enter
-        addTagText.setOnKeyPressed((ke) -> {
-            if (ke.getCode() == KeyCode.ENTER) {
-                controller.addDebugLog("Adding keyword!");
-                addKeyword();
             }
         });
 

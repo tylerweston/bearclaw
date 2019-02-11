@@ -7,28 +7,26 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Model {
 
-    final double ver = 0.2;
+    private final double ver = 0.2;
 
-    File saveDir = null;
-    String loadedFilename;
+    private File saveDir = null;
+    private String loadedFilename;
 
-    ArrayList<String> debugLog = new ArrayList<>();         // holds our debug messages
+    private ArrayList<String> debugLog = new ArrayList<>();         // holds our debug messages
 
-    ArrayList<String> currentKwords = new ArrayList<>();    // holds our current keywords
-    ObservableList<String> observableKWords = FXCollections.observableArrayList(currentKwords);
+    private ArrayList<String> currentKwords = new ArrayList<>();    // holds our current keywords
+    private ObservableList<String> observableKWords = FXCollections.observableArrayList(currentKwords);
                                                             // kwords observable
-    Controller controller;
-    ArrayList<String> hockeySets;
+    private Controller controller;
+    private ArrayList<String> hockeySets;
 
-//    GUI gui;
-    int currCategoryID = 64482; // default is sports cards & memorabilia
-    final String prefsFile = "prefs.bcs";
-    boolean hasChanged = false;
+    private int currCategoryID = 64482; // default is sports cards & memorabilia
+    private final String prefsFile = "prefs.bcs";
+    private boolean hasChanged = false;
 
     //TODO:
     // -this eventually will hold all of our data, so we need to move the keywords that we
@@ -38,9 +36,9 @@ public class Model {
     // - whatever directory we chose to save the data to (or have a set default option?)
     // - load whichever keyword list was the last one that we used
     // -
-    CategoryManager catManager;
+    private CategoryManager catManager;
 
-    public Model() {
+    Model() {
         // init stuff here
         // eventually all of our list of tags, loading and parsing data
         // and associated things will go here
@@ -58,7 +56,7 @@ public class Model {
     }
 
     void loadHockeySets() {
-        hockeySets = new ArrayList<String>();
+        hockeySets = new ArrayList<>();
         File subsetFile= new File("subsets.txt");
         addToDebug("Grabbing subsets list");
         try {
@@ -75,7 +73,7 @@ public class Model {
         return loadedFilename;
     }
 
-    public void setLoadedFilename(String s) {
+    void setLoadedFilename(String s) {
         loadedFilename = s;
     }
 
@@ -135,7 +133,7 @@ public class Model {
         return catManager;
     }
 
-    public void addKeyword(String kword) {
+    void addKeyword(String kword) {
         observableKWords.add(kword);
         hasChanged = true;
     }
@@ -145,25 +143,25 @@ public class Model {
         hasChanged = true;
     }
 
-    public void removeKeyword(int index) {
+    void removeKeyword(int index) {
         observableKWords.remove(index);
         hasChanged = true;
     }
 
-    public void removeKeywords(ArrayList<String> kwords) {
+    void removeKeywords(ArrayList<String> kwords) {
         observableKWords.removeAll(kwords);
         hasChanged = true;
     }
 
-    public boolean isChanged() {
+    boolean isChanged() {
         return hasChanged;
     }
 
-    public void setHasChanged(boolean val) {
+    void setHasChanged(boolean val) {
         hasChanged = val;
     }
 
-    public double getVer() {
+    double getVer() {
         return ver;
     }
 }

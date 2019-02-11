@@ -1,10 +1,7 @@
 package bearclaw;
 
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.DirectoryChooser;
@@ -22,7 +19,6 @@ import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -59,6 +55,7 @@ public class Controller {
         }
         model.loadHockeySets();
         model.addToDebug("Done setting defaults...");
+        model.setHasChanged(false);
     }
 
     public void setGUI(GUI gui) {
@@ -81,6 +78,29 @@ public class Controller {
         // to do here:
         // clean up and save any data, etc as necessary
         // ie, check if any of our lists have changed, etc and prompt to save if they have
+        if (model.hasChanged) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Unsaved changes in keyword list");
+            alert.setHeaderText("Do you want to save changes to your keyword list? This will overwrite current list");
+            alert.setContentText("Choose wisely.");
+
+            ButtonType buttonSave = new ButtonType("Save");
+            ButtonType buttonDiscard = new ButtonType("Discard");
+            ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+            alert.getButtonTypes().setAll(buttonSave, buttonDiscard, buttonTypeCancel);
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == buttonSave){
+                // do saving here
+                addDebugLog("Saving changes");
+                saveKeywords(model.getLoadedFilename());
+            } else if (result.get() == buttonDiscard) {
+                // do nothing here and continue with exit
+            } else {
+                return; // this will abort close (?)
+            }
+        }
         Platform.exit();
         System.exit(0);
     }
@@ -653,6 +673,8 @@ public class Controller {
             KeywordList kwords = (KeywordList) objectInputStream.readObject();
             model.setCurrentKwords(kwords.getKeywords());
             model.setCurrCategoryID(kwords.getMyCategory());
+            model.setLoadedFilename(fileName);
+            model.setHasChanged(false);
 
             if (gui!= null) gui.setComboBox(CategoryManager.getString(kwords.getMyCategory()).trim());
             objectInputStream.close();
@@ -795,7 +817,7 @@ public class Controller {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("About");
         alert.setHeaderText(null);
-        alert.setContentText("This is where the about message will go, I guess.");
+        alert.setContentText("Coding: Tyler Weston 2019");
 
         alert.showAndWait();
     }
@@ -812,10 +834,6 @@ public class Controller {
         if (hasGUI) return gui;
         return null;
     }
-//
-//    boolean hasGUI() {
-//        return hasGUI;
-//    }
 
 }
 

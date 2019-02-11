@@ -66,7 +66,7 @@ public class GUI {
 
         GridPane root = new GridPane();
         root.setAlignment(Pos.CENTER);
-        primaryStage.setTitle("BearClaw v0.1");
+        primaryStage.setTitle("BearClaw v" + controller.getModel().getVer());
         Scene scene = new Scene(root, 400, 400);
         primaryStage.setScene(scene);
 

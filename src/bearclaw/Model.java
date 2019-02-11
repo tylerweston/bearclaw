@@ -12,7 +12,10 @@ import java.util.List;
 
 public class Model {
 
+    final double ver = 0.2;
+
     File saveDir = null;
+    String loadedFilename;
 
     ArrayList<String> debugLog = new ArrayList<>();         // holds our debug messages
 
@@ -25,6 +28,7 @@ public class Model {
 //    GUI gui;
     int currCategoryID = 64482; // default is sports cards & memorabilia
     final String prefsFile = "prefs.bcs";
+    boolean hasChanged = false;
 
     //TODO:
     // -this eventually will hold all of our data, so we need to move the keywords that we
@@ -67,9 +71,18 @@ public class Model {
         }
     }
 
+    String getLoadedFilename() {
+        return loadedFilename;
+    }
+
+    public void setLoadedFilename(String s) {
+        loadedFilename = s;
+    }
+
     ArrayList<String> getHockeySets() {
         return hockeySets;
     }
+
     ObservableList<String> getObservableKWords() {
         return observableKWords;
     }
@@ -83,6 +96,9 @@ public class Model {
     }
 
     void setCurrentKwords(ArrayList<String> cur) {
+        // todo:
+        // still a bug in here somewhere?
+        hasChanged = false;
         currentKwords = cur;
 //        observableKWords = FXCollections.observableArrayList(currentKwords);
         observableKWords.clear();
@@ -95,16 +111,13 @@ public class Model {
 
     void setCurrCategoryID(int n) {
         currCategoryID = n;
+        hasChanged = true;
     }
 
     void addToDebug(String toAdd) {
         if (controller.getGUI() != null) controller.getGUI().setDebugText(toAdd);
         debugLog.add(toAdd);
     }
-
-//    void setGui(GUI g) {
-//        gui = g;
-//    }
 
     ArrayList<String> getDebugLog() {
         return debugLog;
@@ -124,17 +137,33 @@ public class Model {
 
     public void addKeyword(String kword) {
         observableKWords.add(kword);
+        hasChanged = true;
     }
 
     public void removeKeyword(String kword) {
         observableKWords.remove(kword);
+        hasChanged = true;
     }
 
     public void removeKeyword(int index) {
         observableKWords.remove(index);
+        hasChanged = true;
     }
 
     public void removeKeywords(ArrayList<String> kwords) {
         observableKWords.removeAll(kwords);
+        hasChanged = true;
+    }
+
+    public boolean isChanged() {
+        return hasChanged;
+    }
+
+    public void setHasChanged(boolean val) {
+        hasChanged = val;
+    }
+
+    public double getVer() {
+        return ver;
     }
 }

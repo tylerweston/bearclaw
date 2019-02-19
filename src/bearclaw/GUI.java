@@ -40,13 +40,13 @@ public class GUI {
 
     public GUI(Stage primaryStage, Controller setController) {
         this.controller = setController;
-        stage = primaryStage;
+        this.stage = primaryStage;
         // set icon
-        stage.getIcons().add(
+        this.stage.getIcons().add(
                 new Image(GUI.class.getResourceAsStream( "icon.png" )));
 
         // handle exit
-        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+        this.stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
                 controller.doExit();
@@ -219,7 +219,7 @@ public class GUI {
     }
 
     Stage getStage() {
-        return stage;
+        return this.stage;
     }
 
 

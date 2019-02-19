@@ -6,9 +6,9 @@ package bearclaw;
 
     todo:
 
-    - Ok, so now if we DELETE a keyword, we can no longer add keywords??
+    - Ok, so now if we DELETE a keyword, we can no longer add keywords?? (?)
     - ONCE WE LOAD A KEYWORD LIST, OBSERVABLES ARE NOT UPDATED PROPERLY
-    - batch processing - test and check this out
+    - if the first keyword is empty the rest of report will not be generated?
     - problem with deleting keywords!
     - simple built in text editor for subset list (not necessary, cut entirely? or leave till last)
         - save subset text

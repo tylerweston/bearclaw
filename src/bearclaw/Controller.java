@@ -64,12 +64,8 @@ public class Controller {
 
     void setGUI(GUI gui) {
         this.gui = gui;
-        hasGUI = true;
+        this.hasGUI = true;
     }
-
-//    ArrayList<String> getKwords() {
-//        return model.getCurrentKwords();
-//    }
 
     void dumpKwords() {
         model.addToDebug("Dumping keywords");
@@ -85,7 +81,10 @@ public class Controller {
         if (model.isChanged()) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Unsaved changes in keyword list");
-            alert.setHeaderText("Do you want to save changes to your keyword list? This will overwrite current list");
+            // do we ever not have a properly loaded filename?
+            String fname = model.getLoadedFilename();
+            String sText = fname.equalsIgnoreCase("") ? "default list" : fname;
+            alert.setHeaderText("Do you want to save changes to your keyword list? This will overwrite " + sText);
             alert.setContentText("Choose wisely.");
 
             ButtonType buttonSave = new ButtonType("Save");
@@ -99,7 +98,8 @@ public class Controller {
                 if (result.get() == buttonSave) {
                     // do saving here
                     addDebugLog("Saving changes");
-                    saveKeywords(model.getLoadedFilename());
+                    if (fname.equalsIgnoreCase("")) fname = "default.bc";
+                    saveKeywords(fname);
                 } else if (result.get() == buttonDiscard) {
                     // do nothing here and continue with exit
 
@@ -163,6 +163,11 @@ public class Controller {
         // next, create a kwords object and pull the category ID and list of keywords from it
         // generate a report from that kwords object
         // close each file
+    }
+
+    boolean fileExists(String f){
+        File tmpDir = new File(f);
+        return tmpDir.exists();
     }
 
     boolean generateBatchReport(String filename, ArrayList<String> kwords, int cat) {
@@ -242,7 +247,7 @@ public class Controller {
         return true;
     }
 
-     boolean generateReport() {
+    boolean generateReport() {
         model.addToDebug("Generating report...");
         // first, open our excel sheet
         if (model.getSaveDir() == null) {
@@ -257,16 +262,18 @@ public class Controller {
         }
         model.addToDebug("Writing to " + model.getSaveDir().toString());
 
-        // todo: this should add date now, what do we want out to be instead
         Date d = new Date();
         SimpleDateFormat ft = new SimpleDateFormat ("dd-MM-yyyy");
         String excelFileName = "/out-" + ft.format(d) + ".xls";
+        if (fileExists((model.getSaveDir().getPath() + excelFileName))) {
+            int i = 0;
+            do {
+                i++;
+                excelFileName = "/out-" + ft.format(d) + "_"+ i +".xls";
+            } while (fileExists(model.getSaveDir().getPath() + excelFileName));
+        }
 
         String excelFileLocation = model.getSaveDir().getPath() + excelFileName;
-        // todo:
-        // check if this file already exists and confirm overwrite if it does
-        // where do we get file name from? generate?
-
 
         // create excel workbook
         WritableWorkbook excelOutput = null;
@@ -349,7 +356,11 @@ public class Controller {
         https_url_sb.append("&");
         https_url_sb.append("itemFilter(0).name=SoldItemsOnly&");
         https_url_sb.append("itemFilter(0).value=true&");
-        https_url_sb.append("sortOrder=PricePlusShippingHighest&");
+
+        // do we care about shipping cost as well? probably not!
+//        https_url_sb.append("sortOrder=PricePlusShippingHighest&");
+        https_url_sb.append("sortOrder=CurrentPriceHighest&");
+
 //        https_url_sb.append("paginationInput.entriesPerPage=2");    // remove this to get all results
         https_url_sb.append("paginationInput.pageNumber=");
         //https_url_sb.append(pageNum);
